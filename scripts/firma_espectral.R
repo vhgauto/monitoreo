@@ -22,7 +22,7 @@ print(glue("\n\nVerifico datos\n\n"))
 # descarga_safe <- function(server = "scihub") {
     # condición de ERROR
     # si SAFE existe, NO descarga
-base_de_datos <- read_tsv("datos/datos_previos.tsv")
+base_de_datos <- read_tsv("datos/base_de_datos.tsv")
 
 n_if <- base_de_datos  |>
         filter(fecha == hoy)
@@ -68,7 +68,7 @@ gg_firma <- firm_tbl %>%
     scale_color_manual(values = MetBrewer::met.brewer(name = "Egypt")) +
     # ejes
     labs(x = "\U03BB (nm)", y = "R<sub>s</sub>", title = glue( 
-            "<span style = 'color:#68228B'>{format(oo, '%d-%m-%Y')}</span>\\
+            "<span style = 'color:#68228B'>{format(hoy, '%d-%m-%Y')}</span>\\
             <span style = 'color:#36648B'> **Firma espectral**</span>")) +
     scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200),
         expand = c(0, 0), position = "bottom",

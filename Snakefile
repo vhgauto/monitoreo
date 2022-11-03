@@ -1,24 +1,11 @@
 rule targets:
     input:
-        "recortes/recorte.tif",
         "datos/datos_nuevos.tsv",
         "figuras/firma.png"
 
-rule descargar_safe:
+rule obtencion_datos_gis:
     input:
-        script = "scripts/descarga_y_recorte.R"
-    output:
-        "recortes/recorte.tif"
-    shell:
-        """
-        {input.script}
-        """
-
-rule extraer_reflec:
-    input:
-        script = "scripts/extraccion.R",
-        input_tif = "recortes/recorte.tif",
-        input_tsv = "datos/datos_previos.tsv"
+        script = "scripts/obtencion_datos_gis.R"
     output:
         "datos/datos_nuevos.tsv"
     shell:
@@ -29,7 +16,7 @@ rule extraer_reflec:
 rule firma_espectral:
     input:
         script = "scripts/firma_espectral.R",
-        input = "datos/datos_previos.tsv"
+        input = "datos/datos_nuevos.tsv"
     output:
         "figuras/firma.png"
     shell:
