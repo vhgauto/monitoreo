@@ -1,7 +1,7 @@
 # 1. Inicio ----
 fecha <- 20221028 # escribo la fecha de interés, en formato AAAAMMDD
-source("funciones__001.R", encoding = "UTF-8") # cargo funciones externas
-# paquetes() # cargo los paquetes
+# cargo funciones externas
+source("scripts/funciones__001.R", encoding = "UTF-8")
 
 # 2. Descarga ----
 disponibilidad()

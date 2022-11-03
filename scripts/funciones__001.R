@@ -10,24 +10,26 @@ library(tidyverse)
 disponibilidad <- function(date = fecha, server = "scihub") {
     # ROI, en coordenadas EPGS: 32721
     lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721)
-    # descargar una fecha específica
+
+    # descargo el producto para la fecha dada
     dia <- ymd(date)
     fecha1 <- c(dia, dia)
+
     # lista de productos Sentinel-2, nivel L2A
-    # tile p/LR & LT: T21JUK
+    # tile: T21JUK
     # server: 'apihub' ó 'dhus'
 
-    lis <<-
-        s2_list(
-            spatial_extent = lr,
-            time_interval = fecha1,
-            level = "L2A",
-            tile = "21JUK", # únicamente el tile JUK
-            server = server # scihub ó gcloud
-        )
+    lis <<- s2_list(
+                    spatial_extent = lr,
+                    time_interval = fecha1,
+                    level = "L2A",
+                    tile = "21JUK", # únicamente el tile JUK
+                    server = server # scihub
+                    )
 
     # nombre de los productos encontrados y disponibilidad
     est <- safe_is_online(lis, verbose = FALSE)
+
     # mostrar el resultado en la consola, como tabla
     print(knitr::kable(tibble(producto = names(est), estado = est),
                        format = "pipe"))
@@ -35,13 +37,13 @@ disponibilidad <- function(date = fecha, server = "scihub") {
 
 descarga_safe <- function(server = "scihub") {
     # condición de ERROR
-    # si el SAFE existe, NO descarga
-    if (file.exists(paste0("safe/", names(lis))) == TRUE) 
+    # si SAFE existe, NO descarga
+    if (file.exists(paste0("safe/", names(lis))) == TRUE)
         stop(glue("{'\n\nSAFE ya descargado\n\n'}"))
 
     # condición de ERROR
-    # si el SAFE NO existe, pero el recorte SÍ existe, NO descarga
-    if (file.exists(paste0("recortes/", fecha, ".tif")) == TRUE) 
+    # si SAFE NO existe, pero el recorte SÍ existe, NO descarga
+    if (file.exists(paste0("recortes/", fecha, ".tif")) == TRUE)
         stop(glue("{'\n\nSubset ya creado\n\n'}"))
 
     # descarga
@@ -58,12 +60,10 @@ datos_reflec <- function() {
 
     # si la base de datos contiene las reflectancias, NO extrae datos
     base_de_datos <- read_tsv("datos/datos_espectrales.tsv")
-    fechaXXX <- fecha
-
-
-
-    n_if <- base_de_datos  |> 
-        filter(fecha == ymd(fechaXXX))
+    fecha_x <- fecha
+    # verifico si en la base de datos existe la fecha dada
+    n_if <- base_de_datos  |>
+        filter(fecha == ymd(fecha_x))
 
     if (nrow(n_if) != 0) {
         print(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
@@ -72,14 +72,13 @@ datos_reflec <- function() {
 
     print(glue("\n\nLevanto el stack subset\n\n"))
 
-    # stack
+    # archivo stack
     ras1 <- glue("recortes/{fecha}.tif")
-    # armo un stack
+    # levanto el stack
     rast <- raster::stack(ras1)
 
     # cargo el vector de puntos muestrales
     print(glue("\n\nLevanto vector de puntos muestrales\n\n"))
-    # puntos <- shapefile("vectores/puntosJUK.shp")
     puntos <- shapefile("vectores/puntos.shp")
 
     # creo el data.frame con los datos de valor de pixel
@@ -87,34 +86,38 @@ datos_reflec <- function() {
     nomb_row <- c("B01", "B02", "B03", "B04", "B05", "B06",
                   "B07", "B08", "B8A", "B11", "B12")
     print(glue("\n\nExtraigo los valores de p\u00EDxel\n\n"))
+
     # extraigo los valores de reflectancia de superficie del ráster
     base <- raster::extract(rast, puntos)
+
     # canvierto a data.frame y agrego columna con los puntos
     base <- data.frame(base, punto = c("LR1", "LR2", "LR3", "LT"))
+
     # arreglo los datos
-    base <- base %>% pivot_longer(cols = -punto,
-                                  values_to = "firma",
-                                  names_to = "param") %>%
-                     pivot_wider(id_cols = param,
-                                 values_from = firma,
-                                 names_from = punto)
-    # cambio el nombre de las bandas
-    base <- base %>% mutate(param = nomb_row)
-    # factor de escala
-    base <- base %>% mutate(LR1 = LR1 / 10000,
+    base <- base |> 
+            pivot_longer(cols = -punto,
+                         values_to = "firma",
+                         names_to = "param") |>
+            pivot_wider(id_cols = param,
+                        values_from = firma,
+                        names_from = punto) |>
+            # cambio el nombre de las bandas
+            mutate(param = nomb_row) |> 
+            # factor de escala
+            mutate(LR1 = LR1 / 10000,
                             LR2 = LR2 / 10000,
                             LR3 = LR3 / 10000,
-                            LT = LT / 10000)  |> 
-                    mutate(fecha = ymd(fecha)) |> 
-                    select(fecha, param, LR1, LR2, LR3, LT)
+                            LT = LT / 10000) |>
+            # agrego la fecha dada
+            mutate(fecha = ymd(fecha)) |>
+            # reacomodo el orden de las columnas
+            select(fecha, param, LR1, LR2, LR3, LT)
 
-    # creo el archivo .tsv
+    # combino con la base de datos
     print(glue("\n\nIncorporo a la base de datos\n\n"))
-
-    
     base_de_datos <- bind_rows(base_de_datos, base)
 
-    # nombreDATO <- glue("datos/{fecha}.csv")
+    # escrivo el archivo .tsv
     write_tsv(base_de_datos, 
               file = "datos/datos_espectrales.tsv") # path completo del .csv
 
