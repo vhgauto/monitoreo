@@ -10,79 +10,58 @@ library(rgdal)
 library(tidyverse)
 
 # día de la fecha
-hoy <- ymd(20221102) # today()
-
-# ymd(20221102) # today()
-# verifico disponibilidad del producto
-# base_de_datos <- read_tsv("datos/base_de_datos.tsv")
-# n_if <- base_de_datos  |>
-#         filter(fecha == hoy)
-# if (nrow(n_if) != 0) {
-#   print(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
-#   return(n_if)
-#   }
+hoy <- ymd(20221102) # ymd(20221102) # today()
 
 # sitio de interés
-lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721) 
+lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721)
 
-    # descargo el producto para la fecha dada
-# dia <- ymd(date)
+# función para generar mensajes en la consola, para separar las secciones
+f_msj <- function(x) {
+    a <- nchar(x)
+    b <- str_flatten(rep("X", a + 8))
+    c <- str_flatten(c("X", rep(" ", a + 6), "X"))
+    d <- str_flatten(c("X   ", x, "   X"))
+    e <- glue("\n\n{b}\n{c}\n{d}\n{c}\n{b}\n\n")
 
-# fecha de interés
-fecha1 <- c(hoy, hoy)
+    return(e)
+}
 
-# lista de productos Sentinel-2, nivel L2A
-# tile: T21JUK
-# server: 'apihub' ó 'dhus'
+# DESCARGA DE PRODUCTO
 
-# busco producto Sentinel-2 MSI L2A, tile 21JUK
+print(glue("{f_msj('DESCARGA DE PRODUCTO')}"))
+
+# busco producto Sentinel-2 MSI L2A, tile 21JUK, vía 'scihub'
 lis <- s2_list(
-                spatial_extent = lr,
-                time_interval = c(hoy, hoy),
-                level = "L2A",
-                tile = "21JUK", # únicamente el tile JUK
-                server = "scihub" # scihub
-                )
+               spatial_extent = lr,
+               time_interval = c(hoy, hoy),
+               level = "L2A",
+               tile = "21JUK",
+               server = "scihub"
+               )
 
-# CONDICIÓN DE ERROR
+# condición de ERROR
 if (length(lis) == 0) {
    stop(glue("'\n\n\nNo hay producto disponible para el {hoy}.\n\n\n'"))
 }
 
-# if (file.exists(paste0("safe/", names(lis))) == TRUE)
-#     stop(glue("{'\n\nSAFE ya descargado\n\n'}"))
-
-    # condición de ERROR
-    # si SAFE NO existe, pero el recorte SÍ existe, NO descarga
-# if (file.exists(paste0("recortes/", fecha, ".tif")) == TRUE)
-#     stop(glue("{'\n\nSubset ya creado\n\n'}")) 
+print(glue("\n\nDescargando producto {names(lis)}\n\n"))
 
 # descarga el producto
 s2_download(lis, service = "apihub", overwrite = FALSE,
             outdir = "safe/")
 
-# }
-
-# recorte <- function() {
-    # condición de ERROR
-    # si el recorte existe, NO recorta
-    # if (file.exists(glue("recortes/{fecha}.tif")) == TRUE)
-    #    stop(glue("{'\n\nSubset ya creado\n\n'}"))
-
-    # condición de ERROR
-    # si el SAFE NO existe, pero el recorte SÍ existe, NO recorta
-    # if (file.exists(glue("safe/{names(lis)}")) == FALSE)
-    #    stop(glue("{'\n\nSAFE no encontrado\n\n'}"))
-
 print(glue("\n\nProducto descargado\n\n"))
 
+# RECORTE DE PRODUCTO
+
+print(glue("{f_msj('RECORTE DE PRODUCTO')}"))
 
 # vector
-print(glue("\n\nCargo vertor de la región de interés\n\n"))
+print(glue("\n\nCargo vertor de la región de inter\u00E9s\n\n"))
 vec <- shapefile("vectores/roi.shp", verbose = FALSE)
 
 # solo me interesan R10m y R20m (R60m NO!)
-print(glue("\n\nCargo las bandas\n\n"))
+print(glue("\n\nCargo las bandas de inter\u00E9s\n\n"))
 
 reso <- list.files(file.path(list.files(
     file.path(getwd(), "safe",
@@ -90,7 +69,7 @@ reso <- list.files(file.path(list.files(
 ), "IMG_DATA"),
 full.names = TRUE)
 
-# guardo las bandas en orden:
+# orden correcto de las bandas:
 # B01, B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12 [11 elementos]
 lis_1020 <- c(
     list.files(reso[3], full.names = T)[2],    # B01
@@ -101,17 +80,18 @@ lis_1020 <- c(
     list.files(reso[2], full.names = T)[9:10]  # B11, B12
 )
 
-print(glue("\n\nGenero los r\u00E1ster para cada banda\n\n"))
 # lista que contiene las bandas ráster
+print(glue("\n\nGenero los r\u00E1ster para cada banda\n\n"))
 ras_1020 <- map(.x = lis_1020, raster)
 
-print(glue("\n\nRecorto las bandas a la regi\u00F3n de inter\u00E9s\n\n")) # no lint # nolint
 # lista que contiene el subset según el ROI
+print(glue("\n\nRecorto las bandas a la regi\u00F3n de inter\u00E9s\n\n"))
 subset <- map(.x = ras_1020, ~ crop(.x, vec))
 
-print(glue("\n\nResampling de bandas a 10m\n\n"))
-# p/crear un stack que contenga todas las bandas, tengo que cambiar la
-# resolución de las bandas
+# resampling de los ráster a 10 m
+print(glue("\n\nResampling de bandas a 10 m\n\n"))
+# p/crear un stack que contenga todas las bandas,
+# tengo que cambiar la resolución de las bandas
 # bandas con 60m: B01 [1]
 # bandas con 20m: B05 [5], B06 [6], B07 [7] , B8A [9], B11 [10], B12 [11]
 # bandas con 10m: B02 [2], B03 [3], B04 [4], B08 [8]
@@ -138,50 +118,41 @@ names(subset_stack) <-
     c("B01", "B02", "B03", "B04", "B05", "B06",
         "B07", "B08", "B8A", "B11", "B12")
 
-print(glue("\n\nEscribo el stack de bandas recortado\n\n"))
-
 # escribir el stack
+print(glue("\n\nEscribo el stack de bandas recortado\n\n"))
 writeRaster(
     subset_stack,
     filename = "recortes/recorte.tif",
-    "GTiff",
+    format = "GTiff",
     overwrite = TRUE
 )
 
 # elimino el contenido de la carpeta SAFE
+print(glue("\n\nElimino recorte\n\n"))
 unlink(x = list.files("safe", full.names = TRUE), recursive = TRUE)
 
+# EXTRACCIÓN
 
-print(glue("\n\nEXTRACCIÓN\n\n"))
+print(glue("{f_msj('EXTRACCIÓN DE REFLECTANCIAS')}"))
 
-
-# n_if <- base_de_datos  |>
-#         filter(fecha == hoy)
-
-# if (nrow(n_if) != 0) {
-#     # print()
-#     return(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
-#     }
-
-
+# archivo stack
 print(glue("\n\nLevanto el stack subset\n\n"))
-
-    # archivo stack
 ras1 <- "recortes/recorte.tif"
-    # levanto el stack
+
+# levanto el stack
 rast <- raster::stack(ras1)
 
-    # cargo el vector de puntos muestrales
-print(glue("\n\nLevanto vector de puntos muestrales\n\n"))
-puntos <- shapefile("vectores/puntos.shp") 
+# cargo el vector de puntos muestrales
+print(glue("\n\nVector de puntos muestrales\n\n"))
+puntos <- shapefile("vectores/puntos.shp")
 
-    # creo el data.frame con los datos de valor de pixel
-    # nombre de las filas del data.frame
+# creo el data.frame con los datos de valor de pixel
+# nombre de las filas del data.frame
 nomb_row <- c("B01", "B02", "B03", "B04", "B05", "B06",
                 "B07", "B08", "B8A", "B11", "B12")
-print(glue("\n\nExtraigo los valores de p\u00EDxel\n\n"))
 
 # extraigo los valores de reflectancia de superficie del ráster
+print(glue("\n\nExtraigo los valores de p\u00EDxel\n\n"))
 base <- raster::extract(rast, puntos)
 
 # canvierto a data.frame y agrego columna con los puntos
@@ -222,10 +193,13 @@ base_de_datos <- bind_rows(base_de_datos, base)
 write_tsv(base_de_datos,
             file = "datos/base_de_datos.tsv") # path completo del .csv
 
-# return(tail(base_de_datos, 11))
-
+# muestro la tabla en la consola
 base
 
+# elimino el recorte
 print(glue("\n\nElimino recorte\n\n"))
-
 unlink("recortes/recorte.tif", recursive = TRUE)
+
+# FIN DEL PROCESO
+
+print(glue("{f_msj('PROCESO FINALIZADO')}"))

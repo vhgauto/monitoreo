@@ -1,51 +1,43 @@
 #!/usr/bin/env Rscript
 
-# library(sf)
-# library(sen2r)
+# librerías
 library(lubridate)
 library(glue)
-# library(raster)
-# library(rgdal)
 library(ggtext)
 library(tidyverse)
 
-# firma_espectral <- function() {
+# día de la fecha
+hoy <- ymd(20221102) # ymd(20221102) # today()
 
-# options(warn = -1)
+# función para generar mensajes en la consola, para separar las secciones
+f_msj <- function(x) {
+    a <- nchar(x)
+    b <- str_flatten(rep("X", a + 8))
+    c <- str_flatten(c("X", rep(" ", a + 6), "X"))
+    d <- str_flatten(c("X   ", x, "   X"))
+    e <- glue("\n\n{b}\n{c}\n{d}\n{c}\n{b}\n\n")
 
-# condición de ERROR
-# si NO existe el recorte, NO grafica la firma espectral
-hoy <- ymd(20221102) # today()
+    return(e)
+}
 
-# print(glue("\n\nVerifico datos\n\n"))
+# FIRMA ESPECTRAL
 
-# descarga_safe <- function(server = "scihub") {
-    # condición de ERROR
-    # si SAFE existe, NO descarga
-base_de_datos <- read_tsv("datos/base_de_datos.tsv")
+print(glue("{f_msj('FIRMA ESPECTRAL')}"))
 
-# n_if <- base_de_datos  |>
-#         filter(fecha == hoy)
-
-# if (nrow(n_if) != 0) {
-#     # print()
-#     stop(glue("{'\n\n\nFirma espectral ya generada.\n\n\n'}"))
-#     }
-
+# leo la base de datos
 print(glue("\n\nLectura de datos\n\n"))
-
 firm <- "datos/datos_nuevos.tsv"
 firm_tbl <- read.table(firm, header = TRUE) %>% as_tibble()
 
+# parámetros de la figura
 lin <- 2
 punt <- 1
 alfa <- .7
 centro <- c(442, 490, 560, 665, 705, 740, 784, 842, 865, 1610, 2190)
-banda <- c("B01", "B02", "B03", "B04", "B05", "B06", 
-            "B07", "B08", "B8A", "B11", "B12")
-# fecha
-# oo <- as.Date.character(hoy, format = "%Y%m%d")
+banda <- c("B01", "B02", "B03", "B04", "B05", "B06",
+           "B07", "B08", "B8A", "B11", "B12")
 
+# grafico
 print(glue("\n\nGraficando\n\n"))
 
 gg_firma <- firm_tbl %>%
@@ -67,7 +59,7 @@ gg_firma <- firm_tbl %>%
     theme_bw() +
     scale_color_manual(values = MetBrewer::met.brewer(name = "Egypt")) +
     # ejes
-    labs(x = "\U03BB (nm)", y = "R<sub>s</sub>", title = glue( 
+    labs(x = "\U03BB (nm)", y = "R<sub>s</sub>", title = glue(
             "<span style = 'color:#68228B'>{format(hoy, '%d-%m-%Y')}</span>\\
             <span style = 'color:#36648B'> **Firma espectral**</span>")) +
     scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200),
@@ -76,14 +68,13 @@ gg_firma <- firm_tbl %>%
         sec.axis = sec_axis(~ ., breaks = centro,
                             labels = glue("{banda}"))) +
     # scale_y_continuous(labels = function(x) ifelse(x == 0, "0", x)) +
-    scale_y_continuous(labels = scales::label_number(big.mark = ".",
-                                                        decimal.mark = ",")) +
+    scale_y_continuous(labels =
+                       scales::label_number(big.mark = ".",
+                                            decimal.mark = ",")) +
     # tema
     theme_bw() +
-    guides(color = guide_legend(override.aes = list(size = 5,
-                                                    linetype = NA,
-                                                    shape = 15,
-                                                    alpha = alfa))) +
+    guides(color = guide_legend(override.aes =
+                   list(size = 5, linetype = NA, shape = 15, alpha = alfa))) +
     # theme
     theme(
         text = element_text(family = "serif"),
@@ -125,6 +116,7 @@ gg_firma <- firm_tbl %>%
     )
 
 # guardo como .png
+print(glue("\n\nGuardo firma espectral\n\n"))
 ggsave(
     plot = gg_firma,
     filename = "figuras/firma.png",
@@ -134,5 +126,3 @@ ggsave(
     height = 14,
     units = "cm"
 )
-
-# }
