@@ -13,7 +13,7 @@ paquetes <- function() {
 
 disponibilidad <- function(date = fecha, server = "scihub") {
     # ROI, en coordenadas EPGS: 32721
-    lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721) # nolint
+    lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721) 
 
     # descargo el producto para la fecha dada
     dia <- ymd(date)
@@ -32,17 +32,17 @@ disponibilidad <- function(date = fecha, server = "scihub") {
                     )
 
     # nombre de los productos encontrados y disponibilidad
-    est <- safe_is_online(lis, verbose = FALSE) # nolint
+    est <- safe_is_online(lis, verbose = FALSE) 
 
     # mostrar el resultado en la consola, como tabla
-    print(knitr::kable(tibble(producto = names(est), estado = est), # nolint
+    print(knitr::kable(tibble(producto = names(est), estado = est), 
                        format = "pipe"))
 }
 
 descarga_safe <- function(server = "scihub") {
     # condición de ERROR
     # si SAFE existe, NO descarga
-    if (file.exists(paste0("safe/", names(lis))) == TRUE) # nolint
+    if (file.exists(paste0("safe/", names(lis))) == TRUE) 
         stop(glue("{'\n\nSAFE ya descargado\n\n'}"))
 
     # condición de ERROR
@@ -51,7 +51,7 @@ descarga_safe <- function(server = "scihub") {
         stop(glue("{'\n\nSubset ya creado\n\n'}"))
 
     # descarga
-    s2_download(lis, service = "apihub", overwrite = FALSE, # nolint # nolint
+    s2_download(lis, service = "apihub", overwrite = FALSE,  
                 outdir = "safe/")
 
 }
@@ -144,15 +144,15 @@ recorte <- function() {
 datos_reflec <- function() {
     # condición de ERROR
     # si NO existe el recorte, NO extrae datos
-    if (file.exists(glue("recortes/{fecha}.tif")) == FALSE)  # nolint # nolint
+    if (file.exists(glue("recortes/{fecha}.tif")) == FALSE)   
         stop(glue("{'Subset no encontrado.'}"))
 
     # si la base de datos contiene las reflectancias, NO extrae datos
-    base_de_datos <- read_tsv("datos/datos_espectrales.tsv") # nolint # nolint
-    fecha_x <- fecha # nolint # nolint
+    base_de_datos <- read_tsv("datos/datos_espectrales.tsv")  
+    fecha_x <- fecha  
     # verifico si en la base de datos existe la fecha dada
     n_if <- base_de_datos  |>
-        filter(fecha == ymd(fecha_x)) # nolint # nolint
+        filter(fecha == ymd(fecha_x))  
 
     if (nrow(n_if) != 0) {
         print(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
@@ -168,7 +168,7 @@ datos_reflec <- function() {
 
     # cargo el vector de puntos muestrales
     print(glue("\n\nLevanto vector de puntos muestrales\n\n"))
-    puntos <- shapefile("vectores/puntos.shp") # nolint
+    puntos <- shapefile("vectores/puntos.shp") 
 
     # creo el data.frame con los datos de valor de pixel
     # nombre de las filas del data.frame
@@ -183,22 +183,22 @@ datos_reflec <- function() {
     base <- data.frame(base, punto = c("LR1", "LR2", "LR3", "LT"))
 
     # arreglo los datos
-    base <- base |>  # nolint # nolint
-            pivot_longer(cols = -punto, # nolint
+    base <- base |>   
+            pivot_longer(cols = -punto, 
                          values_to = "firma",
                          names_to = "param") |>
-            pivot_wider(id_cols = param, # nolint # nolint
-                        values_from = firma, # nolint
+            pivot_wider(id_cols = param,  
+                        values_from = firma, 
                         names_from = punto) |>
             # cambio el nombre de las bandas
-            mutate(param = nomb_row) |>  # nolint # nolint
+            mutate(param = nomb_row) |>   
             # factor de escala
-            mutate(LR1 = LR1 / 10000, # nolint
-                            LR2 = LR2 / 10000, # nolint
-                            LR3 = LR3 / 10000, # nolint
-                            LT = LT / 10000) |> # nolint
+            mutate(LR1 = LR1 / 10000, 
+                            LR2 = LR2 / 10000, 
+                            LR3 = LR3 / 10000, 
+                            LT = LT / 10000) |> 
             # agrego la fecha dada
-            mutate(fecha = ymd(fecha)) |> # nolint
+            mutate(fecha = ymd(fecha)) |> 
             # reacomodo el orden de las columnas
             select(fecha, param, LR1, LR2, LR3, LT)
 
@@ -231,7 +231,7 @@ firma_espectral <- function() {
     punt <- 1
     alfa <- .7
     centro <- c(442, 490, 560, 665, 705, 740, 784, 842, 865, 1610, 2190)
-    banda <- c("B01", "B02", "B03", "B04", "B05", "B06", # nolint
+    banda <- c("B01", "B02", "B03", "B04", "B05", "B06", 
                "B07", "B08", "B8A", "B11", "B12")
     # fecha
     oo <- as.Date.character(fecha, format = "%Y%m%d")
@@ -245,34 +245,32 @@ firma_espectral <- function() {
         pivot_longer(cols = -c(param, centro),
                      values_to = "firma",
                      names_to = "punto") %>%
-        ggplot() + # nolint
+        ggplot() + 
         # verticales
-        geom_vline(aes(xintercept = centro), color = "grey", linetype = 2) + # nolint # nolint
+        geom_vline(aes(xintercept = centro), color = "grey", linetype = 2) +
         # firma
-        geom_point(aes(x = centro, y = firma, colour = punto), size = punt, # nolint
+        geom_point(aes(x = centro, y = firma, colour = punto), size = punt,
                    alpha = 1) +
-        geom_line(aes(x = centro, y = firma, colour = punto), size = lin, # nolint
+        geom_line(aes(x = centro, y = firma, colour = punto), size = lin,
                   alpha = alfa, lineend = "round") +
         # tema
         theme_bw() +
-        # scale_color_brewer(palette = "Dark2") +
-        scale_color_manual(values = MetBrewer::met.brewer(name = "Egypt")) + # nolint
-        # scale_color_manual(values = inthenameofthemoon("TokyoTower")) +
+        scale_color_manual(values = MetBrewer::met.brewer(name = "Egypt")) +
         # ejes
-        labs(x = "\U03BB (nm)", y = "R<sub>s</sub>", title = glue( # nolint
+        labs(x = "\U03BB (nm)", y = "R<sub>s</sub>", title = glue( 
                 "<span style = 'color:#68228B'>{format(oo, '%d-%m-%Y')}</span>\\
                 <span style = 'color:#36648B'> **Firma espectral**</span>")) +
-        scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200), # nolint
+        scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200),
             expand = c(0, 0), position = "bottom",
             # 2do eje horizontal
-            sec.axis = sec_axis(~ ., breaks = centro, # nolint
+            sec.axis = sec_axis(~ ., breaks = centro,
                                 labels = glue("{banda}"))) +
         # scale_y_continuous(labels = function(x) ifelse(x == 0, "0", x)) +
-        scale_y_continuous(labels = scales::label_number(big.mark = ".", # nolint
+        scale_y_continuous(labels = scales::label_number(big.mark = ".",
                                                          decimal.mark = ",")) +
         # tema
         theme_bw() +
-        guides(color = guide_legend(override.aes = list(size = 5, # nolint
+        guides(color = guide_legend(override.aes = list(size = 5,
                                                         linetype = NA,
                                                         shape = 15,
                                                         alpha = alfa))) +
@@ -311,11 +309,13 @@ firma_espectral <- function() {
                                                vjust = .5, size = 6),
             axis.ticks = element_line(color = "black"),
             axis.ticks.length.x.top = unit(0, units = "cm"),
-            axis.line = element_line(size = .25, color = "black")
+            axis.line.x.top = element_blank(),
+            axis.line.x.bottom = element_line(size = .25, color = "black"),
+            axis.line.y.left = element_line(size = .25, color = "black")
         )
-    
+
     # guardo como .png
-    ggsave( # nolint
+    ggsave( 
         plot = gg_firma,
         filename = "figuras/firma.png",
         device = "png",
