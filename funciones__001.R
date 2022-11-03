@@ -56,10 +56,18 @@ datos_reflec <- function() {
     if (file.exists(glue("recortes/{fecha}.tif")) == FALSE) 
         stop(glue("{'Subset no encontrado.'}"))
 
-    # si existe el .csv, NO extrae datos
-    if (file.exists(glue("datos/{fecha}.csv")) == TRUE) {
+    # si la base de datos contiene las reflectancias, NO extrae datos
+    base_de_datos <- read_tsv("datos/datos_espectrales.tsv")
+    fechaXXX <- fecha
+
+
+
+    n_if <- base_de_datos  |> 
+        filter(fecha == ymd(fechaXXX))
+
+    if (nrow(n_if) != 0) {
         print(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
-        return(read.csv(glue("datos/{fecha}.csv")) %>% as_tibble())
+        return(n_if)
         }
 
     print(glue("\n\nLevanto el stack subset\n\n"))
@@ -96,12 +104,21 @@ datos_reflec <- function() {
     base <- base %>% mutate(LR1 = LR1 / 10000,
                             LR2 = LR2 / 10000,
                             LR3 = LR3 / 10000,
-                            LT = LT / 10000)
-    # creo el archivo .csv
-    print(glue("\n\nCreo el archivo .csv\n\n"))
-    nombreDATO <- glue("datos/{fecha}.csv")
-    write_csv(base, file = nombreDATO) # path completo del .csv
-    return(base)
+                            LT = LT / 10000)  |> 
+                    mutate(fecha = fecha)
+                    select(fecha, param, LR1, LR2, LR3, LT)
+
+    # creo el archivo .tsv
+    print(glue("\n\nIncorporo a la base de datos\n\n"))
+
+    
+    base_de_datos <- bind_rows(base_de_datos, base)
+
+    # nombreDATO <- glue("datos/{fecha}.csv")
+    write_tsv(base_de_datos, 
+              file = "datos/datos_espectrales.tsv") # path completo del .csv
+
+    return(tail(base_de_datos, 11))
 }
 
 firma_espectral <- function() {
