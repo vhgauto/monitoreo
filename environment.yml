@@ -10,3 +10,7 @@ dependencies:
   - r-sen2r=1.5.3
   - r-sf=1.0_7
   - r-raster
+  - r-rgdal
+  - r-metbrewer=0.2.0
+  - r-ggtext=0.1.2
+  - r-scales

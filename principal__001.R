@@ -10,3 +10,5 @@ descarga_safe()
 # 3. Extracción ----
 datos_reflec()
 
+# 4. Firma espectral ----
+firma_espectral()
