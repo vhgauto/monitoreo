@@ -196,10 +196,13 @@ firma_espectral <- function() {
             axis.title.x = element_markdown(),
             axis.title.y = element_markdown(),
             axis.text = element_text(size = 13, color = "black"),
-            axis.text.x.top = element_markdown(angle = 90, vjust = .5, size = 6),
+            axis.text.x.top = element_markdown(angle = 90, 
+                                               vjust = .5, size = 6),
+            axis.ticks = element_line(color = "black"),
             axis.ticks.length.x.top = unit(0, units = "cm"),
-            axis.line.y.left = element_line(size = .25, colour = "black"),
-            axis.line.x.bottom = element_line(size = .25, colour = "black")
+            axis.line = element_line(size = .25, color = "black")
+            # axis.line.y.left = element_line(size = .25, colour = "black"),
+            # axis.line.x.bottom = element_line(size = .25, colour = "black")
         )
     
     # guardo como .png
