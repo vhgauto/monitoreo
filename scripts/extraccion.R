@@ -14,15 +14,15 @@ hoy <- ymd(20221102) # today()
 # descarga_safe <- function(server = "scihub") {
     # condición de ERROR
     # si SAFE existe, NO descarga
-base_de_datos <- read_tsv("datos/datos_espectrales.tsv")
+base_de_datos <- read_tsv("datos/datos_previos.tsv")
 
 
 n_if <- base_de_datos  |>
         filter(fecha == hoy)
 
 if (nrow(n_if) != 0) {
-    print(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
-    return(n_if)
+    # print()
+    return(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
     }
 
 # if (file.exists(paste0("safe/", names(lis))) == TRUE)
@@ -67,9 +67,13 @@ base <- base |>
                         LR3 = LR3 / 10000,
                         LT = LT / 10000) |>
         # agrego la fecha dada
-        mutate(fecha = ymd(fecha)) |>
+        mutate(fecha = ymd(hoy)) |>
         # reacomodo el orden de las columnas
-        select(fecha, param, LR1, LR2, LR3, LT)
+        dplyr::select(fecha, param, LR1, LR2, LR3, LT)
+
+# escribo los datos nuevos
+write_tsv(base,
+          file = "datos/datos_nuevos.tsv")
 
 # combino con la base de datos
 print(glue("\n\nIncorporo a la base de datos\n\n"))
@@ -77,9 +81,11 @@ base_de_datos <- bind_rows(base_de_datos, base)
 
 # escrivo el archivo .tsv
 write_tsv(base_de_datos,
-            file = "datos/datos_espectrales.tsv") # path completo del .csv
+            file = "datos/datos_previos.tsv") # path completo del .csv
 
-return(tail(base_de_datos, 11))
+# return(tail(base_de_datos, 11))
+
+base
 
 unlink("recortes/recorte.tif", recursive = TRUE)
 

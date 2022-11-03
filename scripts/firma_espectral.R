@@ -17,22 +17,24 @@ library(tidyverse)
 # si NO existe el recorte, NO grafica la firma espectral
 hoy <- ymd(20221102) # today()
 
+print(glue("\n\nVerifico datos\n\n"))
+
 # descarga_safe <- function(server = "scihub") {
     # condición de ERROR
     # si SAFE existe, NO descarga
-base_de_datos <- read_tsv("datos/datos_espectrales.tsv")
+base_de_datos <- read_tsv("datos/datos_previos.tsv")
 
 n_if <- base_de_datos  |>
         filter(fecha == hoy)
 
 if (nrow(n_if) != 0) {
-    print(glue("{'\n\n\nFirma espectral ya generada.\n\n\n'}"))
-    return(n_if)
+    # print()
+    stop(glue("{'\n\n\nFirma espectral ya generada.\n\n\n'}"))
     }
 
 print(glue("\n\nLectura de datos\n\n"))
 
-firm <- "datos/datos_espectrales.tsv"
+firm <- "datos/datos_previos.tsv"
 firm_tbl <- read.table(firm, header = TRUE) %>% as_tibble()
 
 lin <- 2
@@ -47,8 +49,8 @@ oo <- as.Date.character(hoy, format = "%Y%m%d")
 print(glue("\n\nGraficando\n\n"))
 
 gg_firma <- firm_tbl %>%
-    filter(fecha == oo) |>
-    select(-fecha) |>
+    filter(fecha == hoy) |>
+    dplyr::select(-fecha) |>
     mutate(centro = centro) %>%
     pivot_longer(cols = -c(param, centro),
                     values_to = "firma",
