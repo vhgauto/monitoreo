@@ -10,8 +10,11 @@ paquetes()
 disponibilidad()
 descarga_safe()
 
-# 3. Extracción ----
+# 3. Recorte ----
+recorte()
+
+# 4. Extracción ----
 datos_reflec()
 
-# 4. Firma espectral ----
+# 5. Firma espectral ----
 firma_espectral()
