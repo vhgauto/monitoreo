@@ -224,8 +224,8 @@ firma_espectral <- function() {
 
     print(glue("\n\nLectura de datos\n\n"))
 
-    firm <- glue("datos/{fecha}.csv")
-    firm_tbl <- read.csv(firm) %>% as_tibble()
+    firm <- "datos/datos_espectrales.tsv"
+    firm_tbl <- read.table(firm, header = TRUE) %>% as_tibble()
 
     lin <- 2
     punt <- 1
@@ -239,8 +239,8 @@ firma_espectral <- function() {
     print(glue("\n\nGraficando\n\n"))
 
     gg_firma <- firm_tbl %>%
-        # selecciono únicamente las filas de las bandas
-        filter(str_detect(param, "B")) %>% 
+        filter(fecha == oo) |>
+        select(-fecha) |>
         mutate(centro = centro) %>%
         pivot_longer(cols = -c(param, centro),
                      values_to = "firma",

@@ -1,6 +1,6 @@
 # 1. Inicio ----
 # escribo la fecha de interés, en formato AAAAMMDD
-fecha <- 20221028
+fecha <- 20221102
 # cargo funciones externas
 source("scripts/funciones__001.R", encoding = "UTF-8")
 # activo los paquetes necesarios
