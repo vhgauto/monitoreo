@@ -17,24 +17,24 @@ library(tidyverse)
 # si NO existe el recorte, NO grafica la firma espectral
 hoy <- ymd(20221102) # today()
 
-print(glue("\n\nVerifico datos\n\n"))
+# print(glue("\n\nVerifico datos\n\n"))
 
 # descarga_safe <- function(server = "scihub") {
     # condición de ERROR
     # si SAFE existe, NO descarga
 base_de_datos <- read_tsv("datos/base_de_datos.tsv")
 
-n_if <- base_de_datos  |>
-        filter(fecha == hoy)
+# n_if <- base_de_datos  |>
+#         filter(fecha == hoy)
 
-if (nrow(n_if) != 0) {
-    # print()
-    stop(glue("{'\n\n\nFirma espectral ya generada.\n\n\n'}"))
-    }
+# if (nrow(n_if) != 0) {
+#     # print()
+#     stop(glue("{'\n\n\nFirma espectral ya generada.\n\n\n'}"))
+#     }
 
 print(glue("\n\nLectura de datos\n\n"))
 
-firm <- "datos/datos_previos.tsv"
+firm <- "datos/datos_nuevos.tsv"
 firm_tbl <- read.table(firm, header = TRUE) %>% as_tibble()
 
 lin <- 2
@@ -44,12 +44,12 @@ centro <- c(442, 490, 560, 665, 705, 740, 784, 842, 865, 1610, 2190)
 banda <- c("B01", "B02", "B03", "B04", "B05", "B06", 
             "B07", "B08", "B8A", "B11", "B12")
 # fecha
-oo <- as.Date.character(hoy, format = "%Y%m%d")
+# oo <- as.Date.character(hoy, format = "%Y%m%d")
 
 print(glue("\n\nGraficando\n\n"))
 
 gg_firma <- firm_tbl %>%
-    filter(fecha == hoy) |>
+    # filter(fecha == hoy) |>
     dplyr::select(-fecha) |>
     mutate(centro = centro) %>%
     pivot_longer(cols = -c(param, centro),

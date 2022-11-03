@@ -105,7 +105,7 @@ print(glue("\n\nGenero los r\u00E1ster para cada banda\n\n"))
 # lista que contiene las bandas ráster
 ras_1020 <- map(.x = lis_1020, raster)
 
-print(glue("\n\nRecorto las bandas a la regi\00F3n de inter\u00E9s\n\n")) # no lint # nolint
+print(glue("\n\nRecorto las bandas a la regi\u00F3n de inter\u00E9s\n\n")) # no lint # nolint
 # lista que contiene el subset según el ROI
 subset <- map(.x = ras_1020, ~ crop(.x, vec))
 
@@ -211,13 +211,16 @@ base <- base |>
 write_tsv(base,
           file = "datos/datos_nuevos.tsv")
 
+# leo base de datos
+base_de_datos <- read_tsv("datos/base_de_datos.tsv")
+
 # combino con la base de datos
 print(glue("\n\nIncorporo a la base de datos\n\n"))
 base_de_datos <- bind_rows(base_de_datos, base)
 
 # escrivo el archivo .tsv
 write_tsv(base_de_datos,
-            file = "datos/datos_previos.tsv") # path completo del .csv
+            file = "datos/base_de_datos.tsv") # path completo del .csv
 
 # return(tail(base_de_datos, 11))
 

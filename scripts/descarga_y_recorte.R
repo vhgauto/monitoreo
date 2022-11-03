@@ -90,11 +90,14 @@ lis_1020 <- c(
     list.files(reso[2], full.names = T)[9:10]  # B11, B12
 )
 
-print(glue("\n\nGenero los r\u00E1ster para cada banda\n\n"))
+print(glue("\n\nGenero los raster para cada bandaXXXXXXXXXXXX\n\n"))
 # lista que contiene las bandas ráster
 ras_1020 <- map(.x = lis_1020, raster)
 
-print(glue("\n\nRecorto las bandas al \u00E1rea de inter\u00E9s\n\n"))
+
+print(glue("\n\nXXXXXXXXXXXX\n\n"))
+
+# print(glue("\n\nRecorto las bandas al \u00E1rea de inter\u00E9s\n\n"))
 # lista que contiene el subset según el ROI
 subset <- map(.x = ras_1020, ~ crop(.x, vec))
 
