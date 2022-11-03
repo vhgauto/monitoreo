@@ -9,3 +9,4 @@ dependencies:
   - r-tidyverse=1.3.2
   - r-sen2r=1.5.3
   - r-sf=1.0_7
+  - r-raster
