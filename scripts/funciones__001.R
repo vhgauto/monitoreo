@@ -42,7 +42,7 @@ disponibilidad <- function(date = fecha, server = "scihub") {
 descarga_safe <- function(server = "scihub") {
     # condición de ERROR
     # si SAFE existe, NO descarga
-    if (file.exists(paste0("safe/", names(lis))) == TRUE) 
+    if (file.exists(paste0("safe/", names(lis))) == TRUE)
         stop(glue("{'\n\nSAFE ya descargado\n\n'}"))
 
     # condición de ERROR
@@ -51,7 +51,7 @@ descarga_safe <- function(server = "scihub") {
         stop(glue("{'\n\nSubset ya creado\n\n'}"))
 
     # descarga
-    s2_download(lis, service = "apihub", overwrite = FALSE,  
+    s2_download(lis, service = "apihub", overwrite = FALSE,
                 outdir = "safe/")
 
 }
