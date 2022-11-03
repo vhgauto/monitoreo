@@ -105,7 +105,7 @@ datos_reflec <- function() {
                             LR2 = LR2 / 10000,
                             LR3 = LR3 / 10000,
                             LT = LT / 10000)  |> 
-                    mutate(fecha = fecha)
+                    mutate(fecha = ymd(fecha)) |> 
                     select(fecha, param, LR1, LR2, LR3, LT)
 
     # creo el archivo .tsv
