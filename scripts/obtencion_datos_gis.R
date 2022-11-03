@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 
+# librerías
 library(sf)
 library(sen2r)
 library(lubridate)
@@ -8,38 +9,45 @@ library(raster)
 library(rgdal)
 library(tidyverse)
 
+# día de la fecha
 hoy <- ymd(20221102) # today()
 
-# descarga_safe <- function(server = "scihub") {
-    # condición de ERROR
-    # si SAFE existe, NO descarga
-base_de_datos <- read_tsv("datos/base_de_datos.tsv")
+# ymd(20221102) # today()
+# verifico disponibilidad del producto
+# base_de_datos <- read_tsv("datos/base_de_datos.tsv")
+# n_if <- base_de_datos  |>
+#         filter(fecha == hoy)
+# if (nrow(n_if) != 0) {
+#   print(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
+#   return(n_if)
+#   }
 
-n_if <- base_de_datos  |>
-        filter(fecha == hoy)
-
-if (nrow(n_if) != 0) {
-    print(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
-    return(n_if)
-    }
-
+# sitio de interés
 lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721) 
 
     # descargo el producto para la fecha dada
 # dia <- ymd(date)
+
+# fecha de interés
 fecha1 <- c(hoy, hoy)
 
 # lista de productos Sentinel-2, nivel L2A
 # tile: T21JUK
 # server: 'apihub' ó 'dhus'
 
-lis <<- s2_list(
+# busco producto Sentinel-2 MSI L2A, tile 21JUK
+lis <- s2_list(
                 spatial_extent = lr,
-                time_interval = fecha1,
+                time_interval = c(hoy, hoy),
                 level = "L2A",
                 tile = "21JUK", # únicamente el tile JUK
                 server = "scihub" # scihub
                 )
+
+# CONDICIÓN DE ERROR
+if (length(lis) == 0) {
+   stop(glue("'\n\n\nNo hay producto disponible para el {hoy}.\n\n\n'"))
+}
 
 # if (file.exists(paste0("safe/", names(lis))) == TRUE)
 #     stop(glue("{'\n\nSAFE ya descargado\n\n'}"))
@@ -49,7 +57,7 @@ lis <<- s2_list(
 # if (file.exists(paste0("recortes/", fecha, ".tif")) == TRUE)
 #     stop(glue("{'\n\nSubset ya creado\n\n'}")) 
 
-    # descarga
+# descarga el producto
 s2_download(lis, service = "apihub", overwrite = FALSE,
             outdir = "safe/")
 
@@ -66,12 +74,16 @@ s2_download(lis, service = "apihub", overwrite = FALSE,
     # if (file.exists(glue("safe/{names(lis)}")) == FALSE)
     #    stop(glue("{'\n\nSAFE no encontrado\n\n'}"))
 
-print(glue("\n\nCargo las bandas\n\n"))
+print(glue("\n\nProducto descargado\n\n"))
+
 
 # vector
+print(glue("\n\nCargo vertor de la región de interés\n\n"))
 vec <- shapefile("vectores/roi.shp", verbose = FALSE)
 
 # solo me interesan R10m y R20m (R60m NO!)
+print(glue("\n\nCargo las bandas\n\n"))
+
 reso <- list.files(file.path(list.files(
     file.path(getwd(), "safe",
                 names(lis), "GRANULE"), full.names = TRUE
@@ -93,7 +105,7 @@ print(glue("\n\nGenero los r\u00E1ster para cada banda\n\n"))
 # lista que contiene las bandas ráster
 ras_1020 <- map(.x = lis_1020, raster)
 
-print(glue("\n\nRecorto las bandas al \u00E1rea de inter\u00E9s\n\n"))
+print(glue("\n\nRecorto las bandas a la regi\00F3n de inter\u00E9s\n\n")) # no lint # nolint
 # lista que contiene el subset según el ROI
 subset <- map(.x = ras_1020, ~ crop(.x, vec))
 
@@ -136,16 +148,20 @@ writeRaster(
     overwrite = TRUE
 )
 
+# elimino el contenido de la carpeta SAFE
+unlink(x = list.files("safe", full.names = TRUE), recursive = TRUE)
 
-# EXTRACCIÓN
 
-n_if <- base_de_datos  |>
-        filter(fecha == hoy)
+print(glue("\n\nEXTRACCIÓN\n\n"))
 
-if (nrow(n_if) != 0) {
-    # print()
-    return(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
-    }
+
+# n_if <- base_de_datos  |>
+#         filter(fecha == hoy)
+
+# if (nrow(n_if) != 0) {
+#     # print()
+#     return(glue("{'\n\n\nDatos ya extraídos.\n\n\n'}"))
+#     }
 
 
 print(glue("\n\nLevanto el stack subset\n\n"))
@@ -206,5 +222,7 @@ write_tsv(base_de_datos,
 # return(tail(base_de_datos, 11))
 
 base
+
+print(glue("\n\nElimino recorte\n\n"))
 
 unlink("recortes/recorte.tif", recursive = TRUE)
