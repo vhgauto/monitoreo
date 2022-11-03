@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # library(sf)
 # library(sen2r)
 library(lubridate)
@@ -13,6 +15,7 @@ hoy <- ymd(20221102) # today()
     # condición de ERROR
     # si SAFE existe, NO descarga
 base_de_datos <- read_tsv("datos/datos_espectrales.tsv")
+
 
 n_if <- base_de_datos  |>
         filter(fecha == hoy)
@@ -77,4 +80,7 @@ write_tsv(base_de_datos,
             file = "datos/datos_espectrales.tsv") # path completo del .csv
 
 return(tail(base_de_datos, 11))
+
+unlink("recortes/recorte.tif", recursive = TRUE)
+
 # }

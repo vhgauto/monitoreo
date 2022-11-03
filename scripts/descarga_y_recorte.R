@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 library(sf)
 library(sen2r)
 library(lubridate)
@@ -37,7 +39,7 @@ lis <<- s2_list(
                 time_interval = fecha1,
                 level = "L2A",
                 tile = "21JUK", # únicamente el tile JUK
-                server = server # scihub
+                server = "scihub" # scihub
                 )
 
 # if (file.exists(paste0("safe/", names(lis))) == TRUE)
@@ -136,5 +138,5 @@ writeRaster(
 )
 
 # eliminar carpeta SAFE post recorte
-unlink(glue("{getwd()}/safe/recorte.tif"), recursive = TRUE)
+# unlink(glue("{getwd()}/safe/recorte.tif"), recursive = TRUE)
 # }

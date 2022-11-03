@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # library(sf)
 # library(sen2r)
 library(lubridate)
