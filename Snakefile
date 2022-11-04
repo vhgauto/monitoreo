@@ -5,7 +5,7 @@ rule targets:
 
 rule obtencion_datos_gis:
     input:
-        script = "scripts/obtencion_datos_gis.R"
+        script = "scripts/obtencion_datos_gis.bash"
     output:
         "datos/datos_nuevos.tsv"
     conda:
