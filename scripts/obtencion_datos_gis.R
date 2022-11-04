@@ -46,6 +46,9 @@ if (length(lis) == 0) {
 
 print(glue("\n\nDescargando producto {names(lis)}\n\n"))
 
+# creo la carpeta de descarga
+dir.create("safe")
+
 # descarga el producto
 s2_download(lis, service = "apihub", overwrite = FALSE,
             outdir = "safe/")
