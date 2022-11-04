@@ -19,7 +19,7 @@ jobs:
       - name: Get working directory
         run: |
           pwd
-          which R
+          which Rscript
       - name: Snakemake workflow
         uses: snakemake/snakemake-github-action@v1
         with:
