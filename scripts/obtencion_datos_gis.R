@@ -30,6 +30,9 @@ f_msj <- function(x) {
 
 print(glue("{f_msj('DESCARGA DE PRODUCTO')}"))
 
+# credenciales
+write_scihub_login('vhgauto', '6EVmlMfiDlrA7VzVBAEU') 
+
 # busco producto Sentinel-2 MSI L2A, tile 21JUK, vía 'scihub'
 lis <- s2_list(
                spatial_extent = lr,
