@@ -14,5 +14,6 @@ dependencies:
   - r-metbrewer=0.2.0
   - r-ggtext=0.1.2
   - r-scales=1.2.1
+  - r-showtext=0.9_5
   - snakemake=7.18.1
   - graphviz=6.0.1

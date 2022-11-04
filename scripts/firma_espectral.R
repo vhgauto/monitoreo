@@ -4,6 +4,7 @@
 library(lubridate)
 library(glue)
 library(ggtext)
+library(showtext)
 library(tidyverse)
 
 # día de la fecha
@@ -40,8 +41,13 @@ banda <- c("B01", "B02", "B03", "B04", "B05", "B06",
 # grafico
 print(glue("\n\nGraficando\n\n"))
 
+# fuentes
+font_add_google(name = "Playfair Display", family = "playfair") # título
+font_add_google(name = "Inter", family = "inter") # resto del texto
+showtext_auto()
+showtext_opts(dpi = 300)
+
 gg_firma <- firm_tbl %>%
-    # filter(fecha == hoy) |>
     dplyr::select(-fecha) |>
     mutate(centro = centro) %>%
     pivot_longer(cols = -c(param, centro),
@@ -59,15 +65,16 @@ gg_firma <- firm_tbl %>%
     theme_bw() +
     scale_color_manual(values = MetBrewer::met.brewer(name = "Egypt")) +
     # ejes
-    labs(x = "\U03BB (nm)", y = "R<sub>s</sub>", title = glue(
-            "<span style = 'color:#68228B'>{format(hoy, '%d-%m-%Y')}</span>\\
-            <span style = 'color:#36648B'> **Firma espectral**</span>")) +
+    labs(x = "\U03BB (nm)",
+         y = "R<sub>s</sub>",
+         title = glue("Firma espectral"),
+         subtitle = glue("Fecha: {format(hoy, '%d-%m-%Y')}")
+           ) +
     scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200),
         expand = c(0, 0), position = "bottom",
         # 2do eje horizontal
         sec.axis = sec_axis(~ ., breaks = centro,
                             labels = glue("{banda}"))) +
-    # scale_y_continuous(labels = function(x) ifelse(x == 0, "0", x)) +
     scale_y_continuous(labels =
                        scales::label_number(big.mark = ".",
                                             decimal.mark = ",")) +
@@ -77,7 +84,6 @@ gg_firma <- firm_tbl %>%
                    list(size = 5, linetype = NA, shape = 15, alpha = alfa))) +
     # theme
     theme(
-        text = element_text(family = "serif"),
         aspect.ratio = .7,
         # leyenda
         legend.title = element_blank(),
@@ -87,26 +93,26 @@ gg_firma <- firm_tbl %>%
         legend.key.width = unit(1, "cm"),
         legend.key.height = unit(.1, "cm"),
         legend.key = element_rect(fill = NA),
-        legend.text = element_text(size = 10),
+        legend.text = element_text(size = 10, family = "inter"),
         legend.background = element_rect(fill = NA),
         legend.box.background = element_rect(fill = NA, color = NA),
         # grid
         panel.grid.minor = element_blank(),
         panel.grid.major = element_line(size = .25),
         panel.border = element_rect(color = NA),
-        panel.background = element_rect(fill = "transparent"),
+        panel.background = element_rect(fill = "ivory"),
         # plot
         plot.margin = margin(5, 20, 5, 5),
         plot.caption = element_markdown(),
-        plot.title = element_markdown(size = 17),
-        plot.subtitle = element_markdown(size = 13),
-        plot.background = element_rect(fill = "transparent", color = NA),
+        plot.title = element_markdown(size = 17, family = "playfair"),
+        plot.subtitle = element_markdown(size = 13, family = "inter"),
+        plot.background = element_rect(fill = "ivory", color = NA),
         # eje
         axis.title = element_markdown(size = 15),
         axis.title.x = element_markdown(),
         axis.title.y = element_markdown(),
-        axis.text = element_text(size = 13, color = "black"),
-        axis.text.x.top = element_markdown(angle = 90, 
+        axis.text = element_text(size = 13, color = "black", family = "inter"),
+        axis.text.x.top = element_markdown(angle = 90, family = "inter",
                                             vjust = .5, size = 6),
         axis.ticks = element_line(color = "black"),
         axis.ticks.length.x.top = unit(0, units = "cm"),
@@ -121,8 +127,8 @@ ggsave(
     plot = gg_firma,
     filename = "figuras/firma.png",
     device = "png",
-    dpi = 600,
-    width = 17,
-    height = 14,
+    dpi = 300,
+    width = 20,
+    height = 17,
     units = "cm"
 )
