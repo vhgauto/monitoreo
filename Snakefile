@@ -1,6 +1,6 @@
-rule demo:
+rule targets:
     input:
-        script: "scripts/demo.R"
+        script = "scripts/demo.R"
     shell:
         """
         {input.script}
