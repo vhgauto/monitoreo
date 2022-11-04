@@ -128,6 +128,10 @@ names(subset_stack) <-
     c("B01", "B02", "B03", "B04", "B05", "B06",
         "B07", "B08", "B8A", "B11", "B12")
 
+# creo la carpeta del recorte
+# creo la carpeta de descarga
+dir.create("recortes")
+
 # escribir el stack
 print(glue("\n\nEscribo el stack de bandas recortado\n\n"))
 writeRaster(
