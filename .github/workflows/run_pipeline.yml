@@ -1,8 +1,8 @@
 name: Ejecuto el Proyecto Monitoreo GISTAQ 2020
 run-name: ${{ github.actor }} está corriendo snakemake 🐍
 on:
-  schelude:
-  - cron: '21 22 * * *' 
+  schedule:
+  - cron: '25 22 * * *' 
 jobs:
   Ejecuto-Proyecto-Monitoreo-GISTAQ-2020:
     runs-on: ubuntu-latest
