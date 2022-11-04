@@ -2,7 +2,7 @@ rule targets:
     input:
         script = "scripts/demo.bash"
     conda:
-        "environmet.yml"
+        "environment.yml"
     shell:
         """
         {input.script}
