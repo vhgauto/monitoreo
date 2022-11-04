@@ -1,8 +1,8 @@
-name: GitHub Actions Demo Víctor
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Ejecuto el Proyecto Monitoreo GISTAQ 2020
+run-name: ${{ github.actor }} está corriendo snakemake 🐍
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Ejecuto-Proyecto-Monitoreo-GISTAQ-2020:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -14,8 +14,25 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}
-      - name: TEST R
+          ls
+      - name: Get working directory
         run: |
-          scripts/demo.R
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          pwd
+          which Rscript
+      - name: Snakemake workflow
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: '.'
+          snakefile: 'Snakefile'
+          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
+          stagein: '' # additional preliminary commands to run (can be multiline)
+      - name: Configuro git en el runner
+        run: |
+          git config --local user.email "noreply@github.com"
+          git config --local user.name "GitHub"
+      - name: Commit de los cambios en el repositorio
+        run: |
+          git add figuras/firma.png
+          git commit -m "Última firma espectral"
+          git push origin main
+      - run: echo "🍏 El estado final es = ${{ job.status }}."
