@@ -10,7 +10,7 @@ Las tareas que se ejecutan tienen como finalidad:
 - Generar una base de datos (.tsv) unificada
 - Graficar la firma espectral de la fecha dada
 
-Contacto:
-GISTAQ: [gistaq@ca.frre.utn.edu.ar](mailto:gistaq@ca.frre.utn.edu.ar)
-Dirección: French 414, Resistencia, Chaco, CP 3500
+Contacto:  
+GISTAQ: [gistaq@ca.frre.utn.edu.ar](mailto:gistaq@ca.frre.utn.edu.ar)  
+Dirección: French 414, Resistencia, Chaco, CP 3500  
 Encargado del presente repositorio: [Víctor Gauto](mailto:victor.gauto@outlook.com)
