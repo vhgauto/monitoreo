@@ -1,1 +1,38 @@
 
+name: Ejecuto el Proyecto Monitoreo GISTAQ 2020
+run-name: ${{ github.actor }} está corriendo snakemake 🐍
+on: [push]
+jobs:
+  Ejecuto-Proyecto-Monitoreo-GISTAQ-2020:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls
+      - name: Get working directory
+        run: |
+          pwd
+      - name: Snakemake workflow
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: '.'
+          snakefile: 'Snakefile'
+          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
+          stagein: '' # additional preliminary commands to run (can be multiline)
+      - name: Configuro git en el runner
+        run: |
+          git config --local user.email "noreply@github.com"
+          git config --local user.name "GitHub"
+      - name: Commit de los cambios en el repositorio
+        run: |
+          git add figuras/firma.png
+          git commit -m "Última firma espectral"
+          git push origin main
+      - run: echo "🍏 El estado final es = ${{ job.status }}."
