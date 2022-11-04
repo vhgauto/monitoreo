@@ -15,5 +15,7 @@ dependencies:
   - r-ggtext=0.1.2
   - r-scales=1.2.1
   - r-showtext=0.9_5
+  - r-magick=2.7.3
+  - r-cowplot=1.1.1
   - snakemake=7.18.1
   - graphviz=6.0.1
