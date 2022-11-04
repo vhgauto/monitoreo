@@ -17,7 +17,6 @@ jobs:
           ls
       - name: Get working directory
         run: |
-          cd /home/runner/work/monitoreo
           pwd
           which Rscript
       - name: Snakemake workflow
