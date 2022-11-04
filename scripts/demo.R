@@ -1,3 +1,3 @@
-#!/usr/bin/env Rscript
+#!/usr/bin/env -S Rscript --vanilla
 
 print("Holis")
