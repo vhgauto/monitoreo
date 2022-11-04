@@ -54,6 +54,10 @@ print(glue("\n\nProducto descargado\n\n"))
 
 # RECORTE DE PRODUCTO
 
+# conviene recortar el producto previa extracción,
+# para que el  resampling se lleve a cabo en una
+# imagen de menor tamaño (y no en la imagen entera)
+# (el resampling de toda la escena tarda UN MONTÓN)
 print(glue("{f_msj('RECORTE DE PRODUCTO')}"))
 
 # vector
