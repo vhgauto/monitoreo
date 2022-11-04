@@ -21,6 +21,25 @@ f_msj <- function(x) {
     return(e)
 }
 
+# función para agregar logo
+f_logo <- function(g, scale = .15, hjust = 1, valing = .045) {
+    url <- "extras/gistaq_logo.png"
+    logo <- magick::image_read(url)
+    g <- g +
+        theme(plot.margin = margin(10, 20, 15, 10))
+    plot <-
+        cowplot::ggdraw(g) +
+        cowplot::draw_image(
+            logo,
+            scale = scale,
+            x = 1,
+            hjust = hjust,
+            halign = 1,
+            valign = valing
+        )
+    return(plot)
+}
+
 # FIRMA ESPECTRAL
 
 print(glue("{f_msj('FIRMA ESPECTRAL')}"))
@@ -121,10 +140,12 @@ gg_firma <- firm_tbl %>%
         axis.line.y.left = element_line(size = .25, color = "black")
     )
 
+gg_logo <- f_logo(gg_firma)
+
 # guardo como .png
 print(glue("\n\nGuardo firma espectral\n\n"))
 ggsave(
-    plot = gg_firma,
+    plot = gg_logo,
     filename = "figuras/firma.png",
     device = "png",
     dpi = 300,
