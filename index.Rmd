@@ -28,8 +28,8 @@ library(lubridate)
 }
 
 body {
-    background-color: black;
-    color: #f5f5f5;
+    background-color: ivory;
+    color: black;
     font-size: 1.2vw;
     font-family: "Lato", sans-serif;
 }

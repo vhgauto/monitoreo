@@ -1,7 +1,6 @@
 rule targets:
     input:
         "datos/datos_nuevos.tsv",
-        "figuras/firma.png",
         "index.html"
 
 rule obtencion_datos_gis:
@@ -18,8 +17,7 @@ rule obtencion_datos_gis:
 
 rule firma_espectral:
     input:
-        script = "scripts/firma_espectral.R",
-        input = "datos/datos_nuevos.tsv"
+        script = "scripts/firma_espectral.R"
     output:
         "figuras/firma.png"
     conda:
