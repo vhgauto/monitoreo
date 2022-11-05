@@ -73,11 +73,9 @@ vec <- shapefile("vectores/roi.shp", verbose = FALSE)
 # solo me interesan R10m y R20m (R60m NO!)
 print(glue("\n\nCargo las bandas de inter\u00E9s\n\n"))
 
-reso <- list.files(file.path(list.files(
-    file.path(getwd(), "safe",
-                names(lis), "GRANULE"), full.names = TRUE
-), "IMG_DATA"),
-full.names = TRUE)
+reso <- list.files(file.path(list.files(file.path(getwd(), "safe",
+                   names(lis), "GRANULE"), full.names = TRUE), "IMG_DATA"),
+                   full.names = TRUE)
 
 # orden correcto de las bandas:
 # B01, B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12 [11 elementos]
@@ -124,9 +122,8 @@ subset_stack <-
                     subset_B07, subset_B08, subset_B8A,
                     subset_B11, subset_B12)
 
-names(subset_stack) <-
-    c("B01", "B02", "B03", "B04", "B05", "B06",
-        "B07", "B08", "B8A", "B11", "B12")
+names(subset_stack) <- c("B01", "B02", "B03", "B04", "B05", "B06",
+                         "B07", "B08", "B8A", "B11", "B12")
 
 # creo la carpeta del recorte
 # creo la carpeta de descarga
@@ -140,10 +137,6 @@ writeRaster(
     format = "GTiff",
     overwrite = TRUE
 )
-
-# elimino el contenido de la carpeta SAFE
-print(glue("\n\nElimino recorte\n\n"))
-unlink(x = list.files("safe", full.names = TRUE), recursive = TRUE)
 
 # EXTRACCIÓN
 
@@ -163,7 +156,7 @@ puntos <- shapefile("vectores/puntos.shp")
 # creo el data.frame con los datos de valor de pixel
 # nombre de las filas del data.frame
 nomb_row <- c("B01", "B02", "B03", "B04", "B05", "B06",
-                "B07", "B08", "B8A", "B11", "B12")
+              "B07", "B08", "B8A", "B11", "B12")
 
 # extraigo los valores de reflectancia de superficie del ráster
 print(glue("\n\nExtraigo los valores de p\u00EDxel\n\n"))
@@ -175,8 +168,8 @@ base <- data.frame(base, punto = c("LR1", "LR2", "LR3", "LT"))
 # arreglo los datos
 base <- base |>
         pivot_longer(cols = -punto,
-                        values_to = "firma",
-                        names_to = "param") |>
+                     values_to = "firma",
+                     names_to = "param") |>
         pivot_wider(id_cols = param,
                     values_from = firma,
                     names_from = punto) |>
@@ -184,17 +177,16 @@ base <- base |>
         mutate(param = nomb_row) |>
         # factor de escala
         mutate(LR1 = LR1 / 10000,
-                        LR2 = LR2 / 10000,
-                        LR3 = LR3 / 10000,
-                        LT = LT / 10000) |>
+               LR2 = LR2 / 10000,
+               LR3 = LR3 / 10000,
+               LT = LT / 10000) |>
         # agrego la fecha dada
         mutate(fecha = ymd(hoy)) |>
         # reacomodo el orden de las columnas
         dplyr::select(fecha, param, LR1, LR2, LR3, LT)
 
 # escribo los datos nuevos
-write_tsv(base,
-          file = "datos/datos_nuevos.tsv")
+write_tsv(base, file = "datos/datos_nuevos.tsv")
 
 # leo base de datos
 base_de_datos <- read_tsv("datos/base_de_datos.tsv")
@@ -203,16 +195,15 @@ base_de_datos <- read_tsv("datos/base_de_datos.tsv")
 print(glue("\n\nIncorporo a la base de datos\n\n"))
 base_de_datos <- bind_rows(base_de_datos, base)
 
-# escrivo el archivo .tsv
-write_tsv(base_de_datos,
-            file = "datos/base_de_datos.tsv") # path completo del .csv
+# sobreescrivo el archivo .tsv
+write_tsv(base_de_datos, file = "datos/base_de_datos.tsv")
 
 # muestro la tabla en la consola
 base
 
 # elimino el recorte
 print(glue("\n\nElimino recorte\n\n"))
-unlink("recortes/recorte.tif", recursive = TRUE)
+unlink(list.files(path = "recortes", full.names = TRUE), recursive = TRUE)
 
 # FIN DEL PROCESO
 

@@ -46,8 +46,8 @@ print(glue("{f_msj('FIRMA ESPECTRAL')}"))
 
 # leo la base de datos
 print(glue("\n\nLectura de datos\n\n"))
-firm <- "datos/datos_nuevos.tsv"
-firm_tbl <- read.table(firm, header = TRUE) %>% as_tibble()
+firm <- read_tsv(file = "datos/datos_nuevos.tsv") # "datos/datos_nuevos.tsv"
+# firm_tbl <- read.table(firm, header = TRUE) |> as_tibble()
 
 # parámetros de la figura
 lin <- 2
@@ -66,13 +66,13 @@ font_add_google(name = "Inter", family = "inter") # resto del texto
 showtext_auto()
 showtext_opts(dpi = 300)
 
-gg_firma <- firm_tbl %>%
+gg_firma <- firm |>
     dplyr::select(-fecha) |>
-    mutate(centro = centro) %>%
+    mutate(centro = centro) |>
     pivot_longer(cols = -c(param, centro),
                     values_to = "firma",
-                    names_to = "punto") %>%
-    ggplot() + 
+                    names_to = "punto") |>
+    ggplot() +
     # verticales
     geom_vline(aes(xintercept = centro), color = "grey", linetype = 2) +
     # firma
