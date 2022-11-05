@@ -1,7 +1,8 @@
 rule targets:
     input:
         "datos/datos_nuevos.tsv",
-        "figuras/firma.png"
+        "figuras/firma.png",
+        "index.html"
 
 rule obtencion_datos_gis:
     input:
@@ -26,4 +27,17 @@ rule firma_espectral:
     shell:
         """
         {input.script}
+        """
+
+rule render_index:
+    input:
+        rmd = "index.Rmd",
+        png = "figuras/firma.png"
+    output:
+        "index.html"
+    conda:
+        "environment.yml"
+    shell:
+        """
+        R -e "library(rmarkdown); render('{input.rmd}')"
         """

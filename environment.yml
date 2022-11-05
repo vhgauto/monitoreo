@@ -17,5 +17,6 @@ dependencies:
   - r-showtext=0.9_5
   - r-magick=2.7.3
   - r-cowplot=1.1.1
+  - r-rmarkdown=2.17
   - snakemake=7.18.1
   - graphviz=6.0.1
