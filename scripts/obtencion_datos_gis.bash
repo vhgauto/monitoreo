@@ -6,4 +6,4 @@ scripts/obtencion_datos_gis.R
 
 scripts/firma_espectral.R
 
-R -e "library(rmarkdown); render('index.Rmd')"
+quarto render index.Qmd --to html

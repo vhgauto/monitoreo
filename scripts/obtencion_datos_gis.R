@@ -201,8 +201,9 @@ write_tsv(base_de_datos, file = "datos/base_de_datos.tsv")
 # muestro la tabla en la consola
 base
 
-# elimino el recorte
+# elimino el SAFE y el recorte
 print(glue("\n\nElimino recorte\n\n"))
+unlink(list.files(path = "safe", full.names = TRUE), recursive = TRUE)
 unlink(list.files(path = "recortes", full.names = TRUE), recursive = TRUE)
 
 # FIN DEL PROCESO
