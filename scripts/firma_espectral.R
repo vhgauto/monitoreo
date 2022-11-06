@@ -26,7 +26,7 @@ f_logo <- function(g, scale = .15, hjust = 1, valing = .045) {
     url <- "extras/gistaq_logo.png"
     logo <- magick::image_read(url)
     g <- g +
-        theme(plot.margin = margin(10, 20, 15, 10))
+        theme(plot.margin = margin(0, 20, 0, 5))
     plot <-
         cowplot::ggdraw(g) +
         cowplot::draw_image(
@@ -121,7 +121,7 @@ gg_firma <- firm |>
         panel.border = element_rect(color = NA),
         panel.background = element_rect(fill = "ivory"),
         # plot
-        plot.margin = margin(5, 20, 5, 5),
+        plot.margin = margin(0, 20, 0, 5),
         plot.caption = element_markdown(hjust = 0, family = "inter"),
         plot.title = element_markdown(size = 17, family = "playfair"),
         plot.subtitle = element_markdown(size = 13, family = "inter"),
@@ -140,12 +140,12 @@ gg_firma <- firm |>
         axis.line.y.left = element_line(size = .25, color = "black")
     )
 
-gg_logo <- f_logo(gg_firma)
+gg_logo <- f_logo(gg_firma, valing = 0.2)
 
 # guardo como .png
 print(glue("\n\nGuardo firma espectral\n\n"))
 ggsave(
-    plot = gg_logo,
+    plot = gg_firma,
     filename = "figuras/firma.png",
     device = "png",
     dpi = 300,

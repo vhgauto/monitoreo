@@ -18,5 +18,6 @@ dependencies:
   - r-magick=2.7.3
   - r-cowplot=1.1.1
   - r-rmarkdown=2.17
+  - r-quarto=1.2
   - snakemake=7.18.1
   - graphviz=6.0.1
