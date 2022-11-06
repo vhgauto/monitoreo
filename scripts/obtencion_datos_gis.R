@@ -10,7 +10,7 @@ library(rgdal)
 library(tidyverse)
 
 # día de la fecha
-hoy <- today() - 1 # ymd(20221102) # today() - 1
+hoy <- ymd(20221102) # ymd(20221102) # today() - 1
 
 # sitio de interés
 lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721)
