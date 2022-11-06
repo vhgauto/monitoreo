@@ -21,33 +21,16 @@ f_msj <- function(x) {
     return(e)
 }
 
-# función para agregar logo
-f_logo <- function(g, scale = .15, hjust = 1, valing = .045) {
-    url <- "extras/gistaq_logo.png"
-    logo <- magick::image_read(url)
-    g <- g +
-        theme(plot.margin = margin(0, 20, 0, 5))
-    plot <-
-        cowplot::ggdraw(g) +
-        cowplot::draw_image(
-            logo,
-            scale = scale,
-            x = 1,
-            hjust = hjust,
-            halign = 1,
-            valign = valing
-        )
-    return(plot)
-}
-
 # FIRMA ESPECTRAL
 
 print(glue("{f_msj('FIRMA ESPECTRAL')}"))
 
 # leo la base de datos
 print(glue("\n\nLectura de datos\n\n"))
-firm <- read_tsv(file = "datos/datos_nuevos.tsv") # "datos/datos_nuevos.tsv"
-# firm_tbl <- read.table(firm, header = TRUE) |> as_tibble()
+firm <- read_tsv(file = "datos/datos_nuevos.tsv")
+
+# fecha de la imagen
+fecha_ti <- distinct(firm, fecha) |> pull()
 
 # parámetros de la figura
 lin <- 2
@@ -87,8 +70,7 @@ gg_firma <- firm |>
     labs(x = "\U03BB (nm)",
          y = "R<sub>s</sub>",
          title = glue("Firma espectral"),
-         subtitle = glue("Fecha: {format(hoy, '%d-%m-%Y')}"),
-         caption = glue("{now()}")) +
+         subtitle = glue("Fecha: {format(fecha_ti, '%d-%m-%Y')}")) +
     scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200),
         expand = c(0, 0), position = "bottom",
         # 2do eje horizontal
@@ -140,16 +122,14 @@ gg_firma <- firm |>
         axis.line.y.left = element_line(size = .25, color = "black")
     )
 
-gg_logo <- f_logo(gg_firma, valing = 0.2)
-
 # guardo como .png
 print(glue("\n\nGuardo firma espectral\n\n"))
 ggsave(
-    plot = gg_firma,
-    filename = "figuras/firma.png",
-    device = "png",
-    dpi = 300,
-    width = 20,
-    height = 17,
-    units = "cm"
+       plot = gg_firma,
+       filename = "figuras/firma.png",
+       device = "png",
+       dpi = 300,
+       width = 20,
+       height = 16,
+       units = "cm"
 )
