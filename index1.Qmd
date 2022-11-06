@@ -4,6 +4,7 @@ format:
     html:
         backgroundcolor: ivory
         mainfont: Inter
+        embed-resources: true
 email_address: victor.gauto@outlook.com
 github_repo: https://github.com/vhgauto/monitoreo
 ---
