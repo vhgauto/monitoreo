@@ -21,25 +21,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 library(lubridate)
 ```
 
-
-<!-- ```{css echo = FALSE}
-
-.main-container {
-    max-width: 100%;
-}
-
-``` -->
-
-
 ![](figuras/firma.png){width=100%}
 
-
-<!-- ![](figuras/firma.png)
-
-Última actualización realizada el `r today()`  
-Sitio web [desarrollado](`r rmarkdown::metadata$github_repo`) por [Víctor Gauto](mailto:`r rmarkdown::metadata$email_address`)
-
-![](extras/gistaq_logo.png){fig-align="right" height=50px} -->
 
 :::: {.columns}
 
@@ -49,7 +32,7 @@ Sitio web [desarrollado](`r rmarkdown::metadata$github_repo`) por [Víctor Gauto
 :::
 
 ::: {.column width="10%"}
-<!-- empty column to create gap -->
+
 :::
 
 ::: {.column width="20%"}
