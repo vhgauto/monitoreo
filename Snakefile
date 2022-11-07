@@ -7,8 +7,6 @@ rule targets:
 rule descarga_y_extraccion:
     input:
         script = "scripts/obtencion_datos_gis.R"
-    output:
-        "datos/datos_nuevos.tsv"
     conda:
         "environment.yml"
     shell:
@@ -18,8 +16,7 @@ rule descarga_y_extraccion:
 
 rule figura_firma:
     input:
-        script = "scripts/firma_espectral.R",
-        file = "datos/datos_nuevos.tsv"
+        script = "scripts/firma_espectral.R"
     output:
         "figuras/firma.png"
     conda:
