@@ -127,6 +127,9 @@ gg_firma <- firm |>
 # creo la carpeta para almacenar la firma espectral
 dir.create("figuras")
 
+# elimino la firma espectral anterior
+unlink(list.files("figuras/", full.names = TRUE), recursive = TRUE)
+
 # guardo como .png
 print(glue("\n\nGuardo firma espectral\n\n"))
 ggsave(
