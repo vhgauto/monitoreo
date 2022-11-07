@@ -34,7 +34,7 @@ jobs:
           git config --local user.name "GitHub"
       - name: Commit de los cambios en el repositorio
         run: |
-          git add figuras/firma.png
+          git add .
           git commit -m "Última firma espectral"
           git push origin main
       - run: echo "🍏 El estado final es = ${{ job.status }}."
