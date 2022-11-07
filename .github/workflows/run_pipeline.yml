@@ -28,11 +28,12 @@ jobs:
           snakefile: 'Snakefile'
           args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
           stagein: '' # additional preliminary commands to run (can be multiline)}
-      - name: Publish to GitHub Pages (and render) ############################################################
-        uses: quarto-dev/quarto-actions/publish@v2
+      - name: Instalo Quarto ############################################################
+        uses: quarto-dev/quarto-actions/setup@v2
+      - name: Render Quarto Project
+        uses: quarto-dev/quarto-actions/render@v2
         with:
-          target: gh-pages
-          render: false ############################################################
+          to: html ############################################################    
       - name: Configuro git en el runner
         run: |
           git config --local user.email "noreply@github.com"
