@@ -21,8 +21,6 @@ jobs:
         run: |
           pwd
           which Rscript
-      - name: Intalando QUARTO ############################################################
-        uses: quarto-dev/quarto-actions/setup@v2 ############################################################
       - name: Snakemake workflow
         uses: snakemake/snakemake-github-action@v1
         with:
