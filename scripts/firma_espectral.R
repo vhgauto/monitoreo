@@ -8,7 +8,7 @@ library(showtext)
 library(tidyverse)
 
 # día de la fecha
-hoy <- today() - 1 # ymd(20221102) # today() - 1
+# hoy <- today() - 1 # ymd(20221102) # today() - 1
 
 # función para generar mensajes en la consola, para separar las secciones
 f_msj <- function(x) {
