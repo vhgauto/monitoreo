@@ -105,7 +105,8 @@ gg_firma <- firm |>
         # plot
         plot.margin = margin(0, 20, 0, 5),
         plot.caption = element_markdown(hjust = 0, family = "inter"),
-        plot.title = element_markdown(size = 17, family = "playfair"),
+        plot.title = element_markdown(size = 22, family = "playfair"),
+        plot.title.position = "plot",
         plot.subtitle = element_markdown(size = 13, family = "inter"),
         plot.background = element_rect(fill = "ivory", color = NA),
         # eje
@@ -133,3 +134,5 @@ ggsave(
        height = 16,
        units = "cm"
 )
+
+print(glue("{f_msj('FIRMA ESPECTRAL COMPLETA')}"))
