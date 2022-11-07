@@ -123,6 +123,9 @@ gg_firma <- firm |>
         axis.line.y.left = element_line(size = .25, color = "black")
     )
 
+# creo la carpeta para almacenar la firma espectral
+dir.create("figuras")
+
 # guardo como .png
 print(glue("\n\nGuardo firma espectral\n\n"))
 ggsave(
