@@ -1,25 +1,12 @@
 rule targets:
     input:
         "scripts/obtencion_datos_gis.bash",
-        "datos/datos_nuevos.tsv",
         "figuras/firma.png",
         "index.html"
 
 rule descarga_y_extraccion:
     input:
-        script = "scripts/obtencion_datos_gis.R"
-    output:
-        "datos/datos_nuevos.tsv"
-    conda:
-        "environment.yml"
-    shell:
-        """
-        {input.script}
-        """
-
-rule figura_firma:
-    input:
-        script = "scripts/firma_espectral.R"
+        script = "scripts/obtencion_datos_gis.bash"
     output:
         "figuras/firma.png"
     conda:
@@ -28,6 +15,18 @@ rule figura_firma:
         """
         {input.script}
         """
+
+# rule figura_firma:
+#     input:
+#         script = "scripts/firma_espectral.R"
+#     output:
+#         "figuras/firma.png"
+#     conda:
+#         "environment.yml"
+#     shell:
+#         """
+#         {input.script}
+#         """
 
 rule render_index:
     input:
