@@ -70,7 +70,8 @@ gg_firma <- firm |>
     labs(x = "\U03BB (nm)",
          y = "R<sub>s</sub>",
          title = glue("Firma espectral"),
-         subtitle = glue("Fecha: {format(fecha_ti, '%d-%m-%Y')}")) +
+         subtitle = glue("Fecha: {format(fecha_ti, '%d-%m-%Y')}"),
+         caption = glue("{now()}")) +
     scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200),
         expand = c(0, 0), position = "bottom",
         # 2do eje horizontal
@@ -104,10 +105,10 @@ gg_firma <- firm |>
         panel.background = element_rect(fill = "ivory"),
         # plot
         plot.margin = margin(0, 20, 0, 5),
-        plot.caption = element_markdown(hjust = 0, family = "inter"),
         plot.title = element_markdown(size = 22, family = "playfair"),
         plot.title.position = "plot",
         plot.subtitle = element_markdown(size = 13, family = "inter"),
+        plot.caption = element_markdown(hjust = 0, family = "inter"),
         plot.background = element_rect(fill = "ivory", color = NA),
         # eje
         axis.title = element_markdown(size = 15),
