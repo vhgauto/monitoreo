@@ -1,5 +1,6 @@
 rule targets:
     input:
+        "scripts/obtencion_datos_gis.bash",
         "datos/datos_nuevos.tsv",
         "figuras/firma.png",
         "index.html"
@@ -7,6 +8,8 @@ rule targets:
 rule descarga_y_extraccion:
     input:
         script = "scripts/obtencion_datos_gis.R"
+    output:
+        "datos/datos_nuevos.tsv"
     conda:
         "environment.yml"
     shell:
