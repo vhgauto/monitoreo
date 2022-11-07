@@ -3,7 +3,7 @@ title: Proyecto Monitoreo GISTAQ 2020
 author: Víctor Gauto
 output: html_document
 email_address: victor.gauto@outlook.com
-github_repo: https://github.com/vhgauto/ids
+github_repo: https://github.com/vhgauto/monitoreo
 ---
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
