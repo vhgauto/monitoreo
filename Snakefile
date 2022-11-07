@@ -1,9 +1,6 @@
 rule render_index:
     input:
-        rmd = "index.rmd",
-        png = "figuras/firma.png"
-    output:
-        "index.html"
+        rmd = "index.rmd"
     conda:
         "environment.yml"
     shell:
