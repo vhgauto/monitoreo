@@ -42,7 +42,7 @@ body {
 :::: {.columns}
 
 ::: {.column width="70%"}
-Última actualización realizada el `r format(now(), '%d/%m/%Y %H:%M:%S')`  
+Última actualización realizada el `r format(now(tzone = "America/Argentina/Buenos_Aires"), "%d/%m/%Y %T")`  
 Sitio web [desarrollado](`r rmarkdown::metadata$github_repo`) por [Víctor Gauto](mailto:`r rmarkdown::metadata$email_address`)
 :::
 

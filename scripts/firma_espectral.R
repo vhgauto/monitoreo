@@ -71,7 +71,7 @@ gg_firma <- firm |>
          y = "R<sub>s</sub>",
          title = glue("Firma espectral"),
          subtitle = glue("Fecha: {format(fecha_ti, '%d-%m-%Y')}"),
-         caption = glue("{now()}")) +
+         caption = glue("{format(now(tzone = 'America/Argentina/Buenos_Aires'), '%d/%m/%Y %T')}")) +
     scale_x_continuous(limits = c(400, 2200), breaks = seq(400, 2200, 200),
         expand = c(0, 0), position = "bottom",
         # 2do eje horizontal
