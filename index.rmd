@@ -52,7 +52,7 @@ Sitio web [desarrollado](`r rmarkdown::metadata$github_repo`) por [Víctor Gauto
 
 ::: {.column width="20%"}
 
-![](extras/gistaq_logo.png){fig-align="right" height=10%}
+[![](extras/gistaq_logo.png)](https://www.facebook.com/GISTAQ){fig-align="right" height=10%}
 
 :::
 
