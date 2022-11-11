@@ -4,9 +4,9 @@ El presente repositorio contiene los scripts correspondientes al Proyecto de Inv
 
 Las tareas que se ejecutan tienen como finalidad:
 
-- Descargar del producto Sentinel-2 MSI, nivel de procesamiento [L2A](https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/processing-levels/level-2), tile 21JUK, del día de la fecha.
+- Descargar el producto Sentinel-2 MSI, nivel de procesamiento [L2A](https://sentinels.copernicus.eu/web/sentinel/user-guides/sentinel-2-msi/processing-levels/level-2), tile 21JUK, del día de la fecha.
 - Recortar el producto a la región de interés para generar un stack con las bandas seleccionadas (B01, B02, B03, B04, B05, B06, B07, B08, B8A, B11, B12).
-- Extraer los valores de píxel (reflectancia de superficie) de los puntos muestrales (4 ubicados en Laguna La Ribira, 1 ubicado en La Toma).
+- Extraer los valores de píxel (reflectancia de superficie) de los puntos muestrales (3 ubicados en Laguna [La Ribera](https://goo.gl/maps/CBzpv8khrSonE4Fw9), 1 ubicado en [La Toma](https://goo.gl/maps/WMDzJCJnPCbFjQhb8)).
 - Generar una base de datos (.tsv) unificada.
 - Graficar la firma espectral de la fecha dada.
 
