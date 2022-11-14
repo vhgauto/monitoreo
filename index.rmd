@@ -43,7 +43,7 @@ body {
 
 ::: {.column width="70%"}
 Última actualización realizada el `r format(now(tzone = "America/Argentina/Buenos_Aires"), "%d/%m/%Y %T")`  
-Sitio web [desarrollado](`r rmarkdown::metadata$github_repo`) por [Víctor Gauto](mailto:`r rmarkdown::metadata$email_address`)
+Sitio web [desarrollado](`r rmarkdown::metadata$github_repo`){target="_blank"} por [Víctor Gauto](mailto:`r rmarkdown::metadata$email_address`){target="_blank"}
 :::
 
 ::: {.column width="10%"}
@@ -52,7 +52,7 @@ Sitio web [desarrollado](`r rmarkdown::metadata$github_repo`) por [Víctor Gauto
 
 ::: {.column width="20%"}
 
-[![](extras/gistaq_logo.png)](https://www.facebook.com/GISTAQ){fig-align="right" height=10%}
+[![](extras/gistaq_logo.png)](https://www.facebook.com/GISTAQ){fig-align="right" height=10% target="_blank"}
 
 :::
 
