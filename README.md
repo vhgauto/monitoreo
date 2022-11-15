@@ -10,11 +10,11 @@ Las tareas que se ejecutan tienen como finalidad:
 - Generar una base de datos (.tsv) unificada.
 - Graficar la firma espectral de la fecha dada.
 
-La firma espectral correspondiente a la última fecha disponible se encuentra en el siguiente [link](https://vhgauto.github.io/monitoreo/){target="_blank"}.
+La firma espectral correspondiente a la última fecha disponible se encuentra en el siguiente [link](https://vhgauto.github.io/monitoreo/).
 
 Contacto:  
-GISTAQ: [gistaq@ca.frre.utn.edu.ar](mailto:gistaq@ca.frre.utn.edu.ar){target="_blank"}  
+GISTAQ: [gistaq@ca.frre.utn.edu.ar](mailto:gistaq@ca.frre.utn.edu.ar)  
 Dirección: French 414, Resistencia, Chaco, CP 3500  
-Encargado del presente repositorio: [Víctor Gauto](mailto:victor.gauto@outlook.com){target="_blank"}
+Encargado del presente repositorio: [Víctor Gauto](mailto:victor.gauto@outlook.com)
 
 [![Ejecuto el Proyecto Monitoreo GISTAQ 2020](https://github.com/vhgauto/monitoreo/actions/workflows/run_pipeline.yml/badge.svg)](https://github.com/vhgauto/monitoreo/actions/workflows/run_pipeline.yml)
