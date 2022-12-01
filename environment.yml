@@ -11,6 +11,11 @@ dependencies:
   - r-sf=1.0_7
   - r-raster=3.5_21
   - r-rgdal=1.5_32
+  # - r-leaflet=2.1.1
+  # - r-leafem=0.2.0
+  # - r-leaflet.extras=1.0.0
+  # - r-leaflet.opacity=0.1.0
+  # - r-htmlwidgets=1.5.4
   - r-metbrewer=0.2.0
   - r-ggtext=0.1.2
   - r-scales=1.2.1
