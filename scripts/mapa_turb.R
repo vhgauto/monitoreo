@@ -13,7 +13,7 @@ library(tidyverse)
 
 # stack ROI ---------------------------------------------------------------
 # 20221127
-recorte_stack <- raster::stack("recortes/20221127.tif")
+recorte_stack <- raster::stack("recortes/recorte.tif")
 
 # vector LR
 laguna_vector <- shapefile("vectores/roi_LR_mapa_turb.shp")
@@ -48,11 +48,15 @@ k_laguna$centers
 
 # valores de MNDWI correspondientes al centro '1', agua
 k1 <- mndwi_vector[k_laguna$cluster == 1]
+k2 <- mndwi_vector[k_laguna$cluster == 2]
 
 # k2 <- mndwi_vector[k_laguna$cluster == 2]
 
 # valor limite de detección de agua
-k_laguna_lim <- mean(k1) - 1.96 * sd(k1)
+k_laguna_inf <- mean(k1) - 1.96 * sd(k1)
+k_laguna_sup <- mean(k2) + 1.96 * sd(k2)
+
+k_laguna_lim <- mean(k_laguna_inf, k_laguna_sup)
 
 # mean(k2)
 # ll <- mean(c(kk$centers[1], kk$centers[2]))
@@ -65,7 +69,7 @@ plot(recorte_mndwi < k_laguna_lim)
 
 # máscara de agua
 mask_agua <- recorte_mndwi > k_laguna_lim
-plot(mask_agua)
+# plot(mask_agua)
 
 # agrego NA
 mask_agua2 <- mask_agua
@@ -197,8 +201,6 @@ mapa_f <- leaflet(turb_mapa2,
         layerId = "turb",
         digits = 1, 
         prefix = "Turbidez")
-
-mapa_f
 
 # guardo mapa, como .html, en un único archivo
 saveWidget(widget = mapa_f, file = "mapa_turb.html",
