@@ -145,6 +145,9 @@ plot(laguna_turb)
 turb_mapa <- laguna_turb*knr2
 plot(turb_mapa)
 
+# exporto el mapa de turb
+writeRaster(turb_mapa, "recortes/turb_mapa.tif")
+
 # turb_mask2 <- turb_mask
 # turb_mask2[turb_mask2 == 0] <- NA
 
@@ -178,6 +181,10 @@ pal <- colorNumeric(c("#ff7300", "#f5f2f0", "#1505f5"),
                     values(turb_mapa2),
                     na.color = "transparent")
 
+pal1 <- colorNumeric(c("RdBu"),
+                    values(turb_mapa2),
+                    na.color = "transparent")
+
 mapa_f <- leaflet(turb_mapa2,
                   options = leafletOptions(zoomControl = FALSE)) |>
     # capa Google Maps
@@ -191,7 +198,7 @@ mapa_f <- leaflet(turb_mapa2,
              attribution = "Google",
              group = "Google Satellite") |>
     addRasterImage(turb_mapa2,
-                   colors = pal,
+                   colors = pal1,
                    group = "turb",
                    layerId = "turb") |>
     # barra de transparencia p/capa RGB
