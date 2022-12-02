@@ -1,5 +1,4 @@
-# ALGORITMO:
-# algoritmo/algoritmo_turb_LR__002.R
+#!/usr/bin/env Rscript
 
 library(raster)
 library(leaflet)
@@ -8,6 +7,7 @@ library(htmlwidgets)
 library(leafem)
 library(leaflet.opacity)
 library(leaflet.extras)
+library(EBImage)
 library(lubridate)
 library(tidyverse)
 
@@ -57,6 +57,12 @@ k_laguna_inf <- mean(k1) - 1.96 * sd(k1)
 k_laguna_sup <- mean(k2) + 1.96 * sd(k2)
 
 k_laguna_lim <- mean(k_laguna_inf, k_laguna_sup)
+
+
+# EBImage
+threshold <- otsu(img)
+threshold
+
 
 # mean(k2)
 # ll <- mean(c(kk$centers[1], kk$centers[2]))
@@ -205,3 +211,6 @@ mapa_f <- leaflet(turb_mapa2,
 # guardo mapa, como .html, en un único archivo
 saveWidget(widget = mapa_f, file = "mapa_turb.html",
            selfcontained = TRUE)
+
+# elimino el recorte
+# unlink(list.files(path = "recortes", full.names = TRUE), recursive = TRUE)
