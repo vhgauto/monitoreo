@@ -14,7 +14,7 @@ library(tidyverse)
 
 # stack ROI ---------------------------------------------------------------
 # 20221127
-recorte_stack <- raster::stack("recortes/20221127.tif")
+recorte_stack <- raster::stack("recortes/recorte.tif")
 
 # vector LR
 LR_vector <- shapefile("vectores/roi_LR_mapa_turb.shp")
