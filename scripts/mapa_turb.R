@@ -7,19 +7,23 @@ library(htmlwidgets)
 library(leafem)
 library(leaflet.opacity)
 library(leaflet.extras)
-library(EBImage)
 library(lubridate)
 library(tidyverse)
 
 # stack ROI ---------------------------------------------------------------
 # 20221127
-recorte_stack <- raster::stack("recortes/recorte.tif")
+# 20210101
+recorte_stack <- raster::stack("recortes/20210101.tif")
+
+# vector LR (irregular)
+laguna_vector <- shapefile("vectores/roi_LR_mapa_turb4.shp")
 
 # vector LR
-laguna_vector <- shapefile("vectores/roi_LR_mapa_turb.shp")
+# laguna_vector <- shapefile("vectores/roi_LR_mapa_turb.shp")
 
 # recorto
-recorte_subset <- crop(recorte_stack, laguna_vector)
+recorte_subset <- raster::mask(raster::crop(recorte_stack, laguna_vector),
+                               laguna_vector)
 
 # RGB
 plotRGB(recorte_subset, r = 4, g = 3, b = 2, stretch = "lin")
@@ -42,26 +46,36 @@ hist(recorte_mndwi)
 # convierto a vector
 mndwi_vector <- as.vector(recorte_mndwi)
 
+# convierto NA en 100
+mndwi_vector2 <- mndwi_vector
+mndwi_vector2[is.na(mndwi_vector2)] <- 100
 # obtengo k-means, 2 centros
-k_laguna <- kmeans(x = mndwi_vector, centers = 2)
+k_laguna <- kmeans(x = mndwi_vector2, centers = 3)
 k_laguna$centers
 
+# SIEMPRE uso el 2do center
+# convierto a ráster binario
+knr <- recorte_mndwi
+knr[] <- k_laguna$cluster
+
+plot(knr)
+
 # valores de MNDWI correspondientes al centro '1', agua
-k1 <- mndwi_vector[k_laguna$cluster == 1]
-k2 <- mndwi_vector[k_laguna$cluster == 2]
+# k1 <- mndwi_vector[k_laguna$cluster == 1]
+# k2 <- mndwi_vector[k_laguna$cluster == 2]
 
 # k2 <- mndwi_vector[k_laguna$cluster == 2]
 
 # valor limite de detección de agua
-k_laguna_inf <- mean(k1) - 1.96 * sd(k1)
-k_laguna_sup <- mean(k2) + 1.96 * sd(k2)
+# k_laguna_inf <- mean(k1) - 1.96 * sd(k1)
+# k_laguna_sup <- mean(k2) + 1.96 * sd(k2)
 
-k_laguna_lim <- mean(k_laguna_inf, k_laguna_sup)
+# k_laguna_lim <- mean(k_laguna_inf, k_laguna_sup)
 
 
 # EBImage
-threshold <- otsu(img)
-threshold
+# threshold <- otsu(img)
+# threshold
 
 
 # mean(k2)
@@ -70,17 +84,18 @@ threshold
 # recorte_mndwi_array <- as.array(recorte_mndwi)
 # lim_mndwi <- otsu(recorte_mndwi_array)
 
-plot(recorte_mndwi < k_laguna_lim)
+# plot(recorte_mndwi < k_laguna_lim)
 # plot(LR_vector, add = TRUE)
 
 # máscara de agua
-mask_agua <- recorte_mndwi > k_laguna_lim
+# mask_agua <- recorte_mndwi > k_laguna_lim
 # plot(mask_agua)
 
 # agrego NA
-mask_agua2 <- mask_agua
-mask_agua2[mask_agua2 == 0] <- NA
-plot(mask_agua2)
+knr2 <- knr
+knr2[knr2 == 2] <- NA
+knr2[knr2 == 3] <- NA
+plot(knr2)
 
 # agua_crop <- crop(agua < lim_agua, LR_vector)
 # plot(mask_agua2)
@@ -92,7 +107,7 @@ plot(mask_agua2)
 vector_irr <- shapefile("vectores/roi_LR_mapa_turb4.shp")
 
 # máscara de agua final
-mask_agua3 <- raster::mask(mask_agua2, vector_irr)
+knr3 <- raster::mask(knr2, vector_irr)
 # píxel agua -> 1
 # píxel NO agua -> NA
 
@@ -127,7 +142,7 @@ laguna_turb <- a_0 + a_1 * b_b05 * b_b03 + a_2 * b_b03 + a_3 * b_b05
 plot(laguna_turb)
 
 # aplico al raster de turb, la máscara de agua (mask_agua3)
-turb_mapa <- laguna_turb*mask_agua3
+turb_mapa <- laguna_turb*knr2
 plot(turb_mapa)
 
 # turb_mask2 <- turb_mask
@@ -148,7 +163,7 @@ color_min <- cellStats(turb_mapa2, stat = min)
 
 # título del mapa (fecha)
 titulo <- tags$p(tags$style("p {color: black; font-size:22px}"),
-                 tags$p(format(ymd(20221127), format = "%d-%m-%Y")))
+                 tags$p(format(ymd(20210101), format = "%d-%m-%Y")))
 
 # zoom
 ext <- extent(turb_mapa2)
@@ -159,18 +174,20 @@ zoom_lng <- mean(c(ext@xmin, ext@xmax))
 logo <- "extras/gistaq_logo.png" # .sgv?
 
 # paleta de colores
-pal <- colorNumeric(c("#ff7300", "#f5f2f0", "#1505f5"), 
+pal <- colorNumeric(c("#ff7300", "#f5f2f0", "#1505f5"),
                     values(turb_mapa2),
                     na.color = "transparent")
 
 mapa_f <- leaflet(turb_mapa2,
                   options = leafletOptions(zoomControl = FALSE)) |>
     # capa Google Maps
-    addTiles(urlTemplate = "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
+    addTiles(urlTemplate =
+                "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
              attribution = "Google",
              group = "Google Maps") |>
     # capa Google Satellite
-    addTiles(urlTemplate = "http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}",
+    addTiles(urlTemplate =
+                "http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}",
              attribution = "Google",
              group = "Google Satellite") |>
     addRasterImage(turb_mapa2,
@@ -205,7 +222,7 @@ mapa_f <- leaflet(turb_mapa2,
         turb_mapa2,
         type = "mousemove",
         layerId = "turb",
-        digits = 1, 
+        digits = 1,
         prefix = "Turbidez")
 
 # guardo mapa, como .html, en un único archivo
