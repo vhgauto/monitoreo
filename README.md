@@ -10,7 +10,7 @@ Las tareas que se ejecutan tienen como finalidad:
 - Generar una base de datos (.tsv) unificada.
 - Graficar la firma espectral de la fecha dada.
 
-La firma espectral correspondiente a la última fecha disponible se encuentra en el siguiente [link](https://vhgauto.github.io/monitoreo/).
+El mapa de la laguna La Ribera, con los valores de turbidez (NTU) para cada píxel de agua, se encuentra en el siguiente [link](https://vhgauto.github.io/monitoreo/).
 
 Contacto:  
 GISTAQ: [gistaq@ca.frre.utn.edu.ar](mailto:gistaq@ca.frre.utn.edu.ar)  

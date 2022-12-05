@@ -10,7 +10,7 @@ library(rgdal)
 library(tidyverse)
 
 # día de la fecha
-hoy <- ymd(20221127) # ymd(20221202) # today() - 1
+hoy <- today() - 1 # ymd(20221202) # today() - 1
 
 # sitio de interés
 lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721)
@@ -221,17 +221,17 @@ base <- base |>
         select(fecha, banda, reflec)
 
 # escribo los datos nuevos
-write_tsv(base, file = "datos/datos_nuevos2.tsv")
+write_tsv(base, file = "datos/datos_nuevos.tsv")
 
 # leo base de datos
-base_de_datos <- read_tsv("datos/base_de_datos2.tsv")
+base_de_datos <- read_tsv("datos/base_de_datos.tsv")
 
 # combino con la base de datos
 print(glue("\n\nIncorporo a la base de datos\n\n"))
 base_de_datos <- bind_rows(base_de_datos, base)
 
 # sobreescrivo el archivo .tsv
-write_tsv(base_de_datos, file = "datos/base_de_datos2.tsv")
+write_tsv(base_de_datos, file = "datos/base_de_datos.tsv")
 
 # muestro la tabla en la consola
 base

@@ -24,7 +24,7 @@ print(glue("{f_msj('FIRMA ESPECTRAL')}"))
 
 # leo la base de datos
 print(glue("\n\nLectura de datos\n\n"))
-firm <- read_tsv(file = "datos/datos_nuevos2.tsv")
+firm <- read_tsv(file = "datos/datos_nuevos.tsv")
 
 # fecha de la imagen
 fecha_ti <- distinct(firm, fecha) |> pull()
