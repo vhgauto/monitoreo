@@ -121,7 +121,7 @@ color_max <- cellStats(turb_mapa2, stat = max)
 color_min <- cellStats(turb_mapa2, stat = min)
 
 # título del mapa (fecha)
-fecha_ti <- read_tsv("datos/datos_nuevos2.tsv") |> pull(fecha) |> unique()
+fecha_ti <- read_tsv("datos/datos_nuevos.tsv") |> pull(fecha) |> unique()
 titulo <- tags$p(tags$style("p {color: black; font-size:22px}"),
                  tags$p(format(fecha_ti, format = "%d-%m-%Y")))
 
