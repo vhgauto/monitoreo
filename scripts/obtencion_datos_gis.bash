@@ -4,6 +4,4 @@ rm -rf safe/*
 
 scripts/obtencion_datos_gis.R
 
-# scripts/firma_espectral.R
-
-# R -e "library(rmarkdown); render('index.rmd')"
+scripts/firma_espectral.R

@@ -10,7 +10,7 @@ library(rgdal)
 library(tidyverse)
 
 # día de la fecha
-hoy <- ymd(20221202) # ymd(20221202) # today() - 1
+hoy <- ymd(20221127) # ymd(20221202) # today() - 1
 
 # sitio de interés
 lr <- st_sfc(st_point(c(305789.86931, 6965069.94723)), crs = 32721)
@@ -239,7 +239,6 @@ base
 # elimino el SAFE (el recorte es eliminado post creación de website)
 print(glue("\n\nElimino recorte\n\n"))
 unlink(list.files(path = "safe", full.names = TRUE), recursive = TRUE)
-# unlink(list.files(path = "recortes", full.names = TRUE), recursive = TRUE)
 
 # FIN DEL PROCESO
 
