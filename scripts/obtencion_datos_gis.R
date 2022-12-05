@@ -34,13 +34,11 @@ print(glue("{f_msj('DESCARGA DE PRODUCTO')}"))
 write_scihub_login('vhgauto', '6EVmlMfiDlrA7VzVBAEU') 
 
 # busco producto Sentinel-2 MSI L2A, tile 21JUK, vía 'scihub'
-lis <- s2_list(
-               spatial_extent = lr,
+lis <- s2_list(spatial_extent = lr,
                time_interval = c(hoy, hoy),
                level = "L2A",
                tile = "21JUK",
-               server = "scihub"
-               )
+               server = "scihub")
 
 # condición de ERROR
 if (length(lis) == 0) {
@@ -58,6 +56,47 @@ s2_download(lis, service = "apihub", overwrite = FALSE,
 
 print(glue("\n\nProducto descargado\n\n"))
 
+# VERIFICACIÓN DE NUBES
+
+print(glue("\n\nVerifico nubosidad en la región de interés\n\n"))
+
+# raster con porcentaje de nubes
+nube_porc <-
+  list.files(file.path(list.files(
+    file.path(getwd(), "safe",
+              names(lis), "GRANULE"), full.names = TRUE
+  ),
+  "QI_DATA"),
+  full.names = TRUE,
+  pattern = "MSK_CLDPRB_20m")
+
+# cargo el ráster con los porcetajes de nubes, por píxel
+nube_raster <- raster(nube_porc)
+
+# cargo el vector de puntos muestrales
+print(glue("\n\nVector de puntos muestrales\n\n"))
+
+puntos <- shapefile("vectores/puntos_LR.shp")
+
+# valores de píxel, p/los 20 sitios muestrales
+nube_pix <- raster::extract(nube_raster, puntos)
+
+# condición de STOP
+if (mean(nube_pix) != 0) {
+  print(glue("{f_msj('PRESENCIA DE NUBES')}"))
+
+  # elimino el SAFE
+  print(glue("\n\nElimino recorte\n\n"))
+  unlink(list.files(path = "safe", full.names = TRUE), recursive = TRUE)
+
+  stop()
+}
+
+# ausencia de nubes (OK!)
+if (mean(nube_pix) == 0) {
+  print(glue("\n\nImagen sin nubes\n\n"))
+}
+
 # RECORTE DE PRODUCTO
 
 # conviene recortar el producto previa extracción,
@@ -66,9 +105,9 @@ print(glue("\n\nProducto descargado\n\n"))
 # (el resampling de toda la escena tarda UN MONTÓN)
 print(glue("{f_msj('RECORTE DE PRODUCTO')}"))
 
-# vector
+# vector alrededor de la laguna
 print(glue("\n\nCargo vertor de la región de inter\u00E9s\n\n"))
-vec <- shapefile("vectores/roi.shp", verbose = FALSE)
+vec <- shapefile("vectores/roi_LR_mapa_turb4.shp")
 
 # solo me interesan R10m y R20m (R60m NO!)
 print(glue("\n\nCargo las bandas de inter\u00E9s\n\n"))
@@ -149,62 +188,58 @@ ras1 <- "recortes/recorte.tif"
 # levanto el stack
 rast <- raster::stack(ras1)
 
-# cargo el vector de puntos muestrales
-print(glue("\n\nVector de puntos muestrales\n\n"))
-puntos <- shapefile("vectores/puntos.shp")
-
 # creo el data.frame con los datos de valor de pixel
 # nombre de las filas del data.frame
 nomb_row <- c("B01", "B02", "B03", "B04", "B05", "B06",
               "B07", "B08", "B8A", "B11", "B12")
+
+names(rast) <- nomb_row
 
 # extraigo los valores de reflectancia de superficie del ráster
 print(glue("\n\nExtraigo los valores de p\u00EDxel\n\n"))
 base <- raster::extract(rast, puntos)
 
 # canvierto a data.frame y agrego columna con los puntos
-base <- data.frame(base, punto = c("LR1", "LR2", "LR3", "LT"))
+base <- data.frame(base, punto = c("LR1", "LR2", "LR3"))
 
 # arreglo los datos
 base <- base |>
         pivot_longer(cols = -punto,
-                     values_to = "firma",
-                     names_to = "param") |>
-        pivot_wider(id_cols = param,
-                    values_from = firma,
-                    names_from = punto) |>
-        # cambio el nombre de las bandas
-        mutate(param = nomb_row) |>
-        # factor de escala
-        mutate(LR1 = LR1 / 10000,
-               LR2 = LR2 / 10000,
-               LR3 = LR3 / 10000,
-               LT = LT / 10000) |>
+                     values_to = "reflec",
+                     names_to = "banda") |>
+        # obtengo la media de los 3 sitios
+        group_by(banda) |>
+        summarise(reflec = mean(reflec)) |>
         # agrego la fecha dada
         mutate(fecha = ymd(hoy)) |>
-        # reacomodo el orden de las columnas
-        dplyr::select(fecha, param, LR1, LR2, LR3, LT)
+        # arreglo las bandas
+        mutate(banda = factor(banda, levels = nomb_row)) |>
+        arrange(banda) |>
+        # factor de escala
+        mutate(reflec = reflec / 10000) |>
+        # ordeno columnas
+        select(fecha, banda, reflec)
 
 # escribo los datos nuevos
-write_tsv(base, file = "datos/datos_nuevos.tsv")
+write_tsv(base, file = "datos/datos_nuevos2.tsv")
 
 # leo base de datos
-base_de_datos <- read_tsv("datos/base_de_datos.tsv")
+base_de_datos <- read_tsv("datos/base_de_datos2.tsv")
 
 # combino con la base de datos
 print(glue("\n\nIncorporo a la base de datos\n\n"))
 base_de_datos <- bind_rows(base_de_datos, base)
 
 # sobreescrivo el archivo .tsv
-write_tsv(base_de_datos, file = "datos/base_de_datos.tsv")
+write_tsv(base_de_datos, file = "datos/base_de_datos2.tsv")
 
 # muestro la tabla en la consola
 base
 
-# elimino el SAFE y el recorte
+# elimino el SAFE (el recorte es eliminado post creación de website)
 print(glue("\n\nElimino recorte\n\n"))
 unlink(list.files(path = "safe", full.names = TRUE), recursive = TRUE)
-unlink(list.files(path = "recortes", full.names = TRUE), recursive = TRUE)
+# unlink(list.files(path = "recortes", full.names = TRUE), recursive = TRUE)
 
 # FIN DEL PROCESO
 

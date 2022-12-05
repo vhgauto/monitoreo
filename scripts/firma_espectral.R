@@ -7,9 +7,6 @@ library(ggtext)
 library(showtext)
 library(tidyverse)
 
-# día de la fecha
-# hoy <- today() - 1 # ymd(20221102) # today() - 1
-
 # función para generar mensajes en la consola, para separar las secciones
 f_msj <- function(x) {
     a <- nchar(x)
@@ -27,7 +24,7 @@ print(glue("{f_msj('FIRMA ESPECTRAL')}"))
 
 # leo la base de datos
 print(glue("\n\nLectura de datos\n\n"))
-firm <- read_tsv(file = "datos/datos_nuevos.tsv")
+firm <- read_tsv(file = "datos/datos_nuevos2.tsv")
 
 # fecha de la imagen
 fecha_ti <- distinct(firm, fecha) |> pull()
@@ -52,20 +49,17 @@ showtext_opts(dpi = 300)
 gg_firma <- firm |>
     dplyr::select(-fecha) |>
     mutate(centro = centro) |>
-    pivot_longer(cols = -c(param, centro),
-                    values_to = "firma",
-                    names_to = "punto") |>
+    # pivot_longer(cols = -c(param, centro),
+    #                 values_to = "firma",
+    #                 names_to = "punto") |>
     ggplot() +
     # verticales
     geom_vline(aes(xintercept = centro), color = "grey", linetype = 2) +
     # firma
-    geom_point(aes(x = centro, y = firma, colour = punto), size = punt,
-                alpha = 1) +
-    geom_line(aes(x = centro, y = firma, colour = punto), size = lin,
-                alpha = alfa, lineend = "round") +
-    # tema
-    theme_bw() +
-    scale_color_manual(values = MetBrewer::met.brewer(name = "Egypt")) +
+    geom_point(aes(x = centro, y = reflec), size = punt,
+                alpha = 1, color = "#43b284") +
+    geom_line(aes(x = centro, y = reflec), linewidth = lin,
+                alpha = alfa, lineend = "round", color = "#43b284") +
     # ejes
     labs(x = "\U03BB (nm)",
          y = "R<sub>s</sub>",
@@ -82,22 +76,9 @@ gg_firma <- firm |>
                                             decimal.mark = ",")) +
     # tema
     theme_bw() +
-    guides(color = guide_legend(override.aes =
-                   list(size = 5, linetype = NA, shape = 15, alpha = alfa))) +
     # theme
     theme(
         aspect.ratio = .7,
-        # leyenda
-        legend.title = element_blank(),
-        legend.position = c(.85, .85),
-        legend.direction = "vertical",
-        legend.spacing.x = unit(.01, "line"),
-        legend.key.width = unit(1, "cm"),
-        legend.key.height = unit(.1, "cm"),
-        legend.key = element_rect(fill = NA),
-        legend.text = element_text(size = 10, family = "inter"),
-        legend.background = element_rect(fill = NA),
-        legend.box.background = element_rect(fill = NA, color = NA),
         # grid
         panel.grid.minor = element_blank(),
         panel.grid.major = element_line(size = .25),
@@ -120,8 +101,8 @@ gg_firma <- firm |>
         axis.ticks = element_line(color = "black"),
         axis.ticks.length.x.top = unit(0, units = "cm"),
         axis.line.x.top = element_blank(),
-        axis.line.x.bottom = element_line(size = .25, color = "black"),
-        axis.line.y.left = element_line(size = .25, color = "black")
+        axis.line.x.bottom = element_line(linewidth = .25, color = "black"),
+        axis.line.y.left = element_line(linewidth = .25, color = "black")
     )
 
 # creo la carpeta para almacenar la firma espectral
@@ -132,14 +113,12 @@ unlink(list.files("figuras/", full.names = TRUE), recursive = TRUE)
 
 # guardo como .png
 print(glue("\n\nGuardo firma espectral\n\n"))
-ggsave(
-       plot = gg_firma,
+ggsave(plot = gg_firma,
        filename = "figuras/firma.png",
        device = "png",
        dpi = 300,
        width = 20,
        height = 16,
-       units = "cm"
-)
+       units = "cm")
 
 print(glue("{f_msj('FIRMA ESPECTRAL COMPLETA')}"))
