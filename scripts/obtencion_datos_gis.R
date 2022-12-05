@@ -73,7 +73,7 @@ nube_porc <-
 # cargo el ráster con los porcetajes de nubes, por píxel
 nube_raster <- raster(nube_porc)
 
-# cargo el vector de puntos muestrales
+# cargo el vector de puntos muestrales (3 puntos, LR)
 print(glue("\n\nVector de puntos muestrales\n\n"))
 
 puntos <- shapefile("vectores/puntos_LR.shp")
@@ -170,12 +170,10 @@ dir.create("recortes")
 
 # escribir el stack
 print(glue("\n\nEscribo el stack de bandas recortado\n\n"))
-writeRaster(
-    subset_stack,
-    filename = "recortes/recorte.tif",
-    format = "GTiff",
-    overwrite = TRUE
-)
+writeRaster(subset_stack,
+            filename = "recortes/recorte.tif",
+            format = "GTiff",
+            overwrite = TRUE)
 
 # EXTRACCIÓN
 
