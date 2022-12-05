@@ -16,18 +16,6 @@ rule descarga_y_extraccion:
         {input.script}
         """
 
-# rule figura_firma:
-#     input:
-#         script = "scripts/firma_espectral.R"
-#     output:
-#         "figuras/firma.png"
-#     conda:
-#         "environment.yml"
-#     shell:
-#         """
-#         {input.script}
-#         """
-
 rule render_index:
     input:
         rmd = "index.rmd",
