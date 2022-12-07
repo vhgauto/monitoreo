@@ -126,8 +126,9 @@ titulo <- tags$p(tags$style("p {color: black; font-size:22px}"),
                  tags$p(format(fecha_ti, format = "%d-%m-%Y")))
 
 # paleta de colores
-pal1 <- colorNumeric(palette = "RdBu", domain = values(turb_mapa2),
-                    na.color = "transparent", reverse = TRUE)
+pal1 <- colorNumeric(palette = colorRamp(c("#1f40ff", "#a3b1ff")),
+                     domain = values(turb_mapa2),
+                     na.color = "transparent", reverse = TRUE)
 
 mapa_t <- leaflet(width = "100%",
                   turb_mapa2,
@@ -177,9 +178,6 @@ mapa_t <- leaflet(width = "100%",
         prefix = "") |>
     # botón de pantalla completa
     addFullscreenControl()
-
-# elimino recorte ráster
-# unlink(list.files(path = "recortes", full.names = TRUE), recursive = TRUE)
 
 ```
 
