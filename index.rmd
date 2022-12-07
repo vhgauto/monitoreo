@@ -12,7 +12,7 @@ github_repo: https://github.com/vhgauto/monitoreo
 
 
 ```{r setup, include=FALSE} 
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ```
 
 ```{css echo = FALSE}
@@ -93,7 +93,7 @@ knr2[knr2 == clu] <- 1
 datos <- read_tsv("datos/turb_reflec_algoritmo.tsv")
 
 # modelo lineal, interacción entre B05 & B03
-mod_lin <- lm(formula = turb ~ I(B05*B03) + B03 + B05, data = datos)
+mod_lin <- lm(formula = turb ~ I(B05 * B03) + B03 + B05, data = datos)
 sum_lin <- summary(mod_lin)
 # R^2 = 0.9264183
 
