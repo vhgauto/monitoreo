@@ -135,14 +135,14 @@ mapa_t <- leaflet(width = "100%",
                   options = leafletOptions(zoomControl = FALSE)) |>
     # capa Google Satellite
     addTiles(urlTemplate =
-                 "http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}",
+                 "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
              attribution = "Google",
-             group = "Google Satellite") |>
+             group = "Vista aérea - Esri") |>
     # capa Google Maps
     addTiles(urlTemplate =
-                "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
              attribution = "Google",
-             group = "Google Maps") |>
+             group = "Open Street Map") |>
     # turbidez
     addRasterImage(turb_mapa2,
                    colors = pal1,
@@ -150,7 +150,7 @@ mapa_t <- leaflet(width = "100%",
                    layerId = "Turbidez") |>
     # # control de las capas
     addLayersControl(
-        baseGroups = c("Google Satellite", "Google Maps"),
+        baseGroups = c("Vista aérea - Esri", "Open Street Map"),
         overlayGroups = "Turbidez",
         options = layersControlOptions(collapsed = FALSE)) |>
     # agrego título
